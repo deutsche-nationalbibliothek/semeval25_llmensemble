@@ -69,25 +69,26 @@ refer to the optimal calibartion of the system, as marked with a
 cross on the precision-recall curves:
 
 ![Precision-Recall Curves](reports/pr_curves.png)
+<img src="reports/pr_curves.png" alt="Precision-Recall Curves" width="400"/>
 
 # Usage
 
 ## Huggingface-Configuration
 
 Some of the LLMs used in this repository have **gated access only**. You need to request access to these models
-through hunngingface and you have to provide your personal access token as an environment
+through HuggingFace and you have to provide your personal access token as an environment
 variable like this before you can run our code:
 ```
 export HF_TOKEN=hf_YOUR_PERSONAL_ACCESS_TOKEN
 ```
 
-Also you may want to specify the download directory, where hugging face models 
+Also you may want to specify the download directory, where HuggingFace models 
 are stored on your workstation, which can 
 be configured in the `params.yaml` section `general.vllm_engineargs.download_dir`
 
 In the same section `general.vllm_engineargs` you find other settings for the
-execution of vllm. In particular, set `tensor_parallel_size` to the number
-of available GPU-Devices.
+execution of vLLM. In particular, set `tensor_parallel_size` to the number
+of available GPU-devices.
 
 **Note:** Make sure you have enough GPU memory to run all the models specified
   in the params.yaml file. 
@@ -99,7 +100,7 @@ a vector search across the vocabulary. To facilitate fast HNSW-Search
 we store the vocabularies text embeddings in a [Weaviate](https://weaviate.io/) 
 vector storage, that you will need to set up locally. 
 Also, this process needs to generate text embeddings. For this purpose 
-we start a [Hugging face Text-Embedding-Inference Service](https://github.com/huggingface/text-embeddings-inference) (TEI). You can launch weaviate as well es the TEI using docker compose and the provided `docker-compose.yaml` file.
+we start a [HuggingFace Text-Embedding-Inference Service](https://github.com/huggingface/text-embeddings-inference) (TEI). You can launch weaviate as well as the TEI using docker compose and the provided `docker-compose.yaml` file.
 Simply run `docker compose up` in this directory and your services are all
 set up. 
 
@@ -141,7 +142,6 @@ dvc exp run
 ```
 See the [documentation]{https://dvc.org/doc/command-reference/exp/run#exp-run} for how to run the experiments in a queue, name the experiment and modify the parameters.
 
-TODO: add some image illustrating our method?
 
 # Evaluation
 
