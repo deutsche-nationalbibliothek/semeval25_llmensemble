@@ -1,0 +1,3 @@
+{
+    "instruction": "Du erhälst einen Text und eine Liste an Schlagwörtern. Bitte ordne die Schlagwörter nach ihrer Relevanz für den Text. Gib für jedes Schlagwort eine Zahl zwischen {min_confidence} und {max_confidence} an, die seine Relevanz widerspiegelt. Schlagwörter, die nicht relevant sind für den Text, bekommen einen Relevanzwert von {min_confidence}. Nenne keine Begründungen. Benutze dieses Outputformat: Schlagwort1:Relevanzwert1, Schlagwort2:Relevanzwert2, .... Die gesamte Antwort soll sich auf einer Zeile befinden."
+}

@@ -1,0 +1,8 @@
+/completions.csv
+/predictions.csv
+
+/ranked.csv
+/pr_curve.csv
+/stratified_results.arrow
+/stratified_results_by_model_and_prompt.arrow
+/predictions_with_combined_scores.csv

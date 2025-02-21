@@ -1,0 +1,6 @@
+{
+    "instruction": "System: {custom_instruction}\n",
+    "example": "User: {text}\n",
+    "keywords": "Assistant: {keywords}\n",
+    "test_item": "User: {text}\nAssistant: "
+}

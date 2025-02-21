@@ -1,0 +1,3 @@
+{
+    "instruction": "Du erhälst einen Text und ein Schlagwort. Bewerte auf einer Skala von 1 bis 10, wie gut das Schlagwort zu dem Text passt. Nenne keine Begründungen. Gib nur die Zahl zwischen {min_confidence} und {max_confidence} zurück."
+}

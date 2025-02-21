@@ -1,0 +1,6 @@
+{
+    "instruction": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{custom_instruction}\n<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n",
+    "example": "{text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+    "keywords": "{keywords}<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n",
+    "test_item": "{text}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n"
+}

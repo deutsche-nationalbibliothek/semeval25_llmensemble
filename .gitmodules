@@ -1,0 +1,3 @@
+[submodule "llms4subjects"]
+	path = llms4subjects
+	url = https://github.com/jd-coderepos/llms4subjects/

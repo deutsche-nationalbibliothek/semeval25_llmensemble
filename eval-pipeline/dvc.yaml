@@ -1,0 +1,90 @@
+stages:
+  single_model_metrics:
+    matrix:
+      model: ${language_models}
+      prompt: ${completion.prompt_specification_files}
+    wdir: ./../
+    cmd:
+      - >
+        Rscript src/R/eval/compute_metrics.r 
+        --ground_truth ${general.dataset_file}
+        --predictions  ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/${mapping.output_file}
+        --ordinal_ranking false
+        --set_retrieval_only TRUE
+        --ignore_unmatched_docs FALSE
+        --out_folder ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/
+    params:
+      - eval.ordinal_ranking
+    deps:
+      - src/R/eval/compute_metrics.r 
+      - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/${mapping.output_file}
+      - ${general.dataset_file}
+    outs:
+      - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/stratified_results.arrow
+    metrics:
+      - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/f1.json:
+          cache: false 
+      - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/rprec.json:
+          cache: false 
+      - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/prec.json:
+          cache: false 
+      - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/rec.json:
+          cache: false 
+
+  collect_stratified_results:
+    cmd: 
+      - >
+        Rscript src/R/eval/collect_stratified_results.r \
+          ${general.write_directory}/*/*/stratified_results.arrow \
+          --output ${general.write_directory}/stratified_results_by_model_and_prompt.arrow
+    always_changed: true
+    wdir: ./../
+    deps:
+      - src/R/eval/collect_stratified_results.r
+    outs:
+      - ${general.write_directory}/stratified_results_by_model_and_prompt.arrow
+
+
+  compute_metrics:
+    foreach:
+      - top20-models-and-prompts
+      - one-model-all-prompts
+      - one-prompt-all-models
+      - one-prompt-one-model
+    do:
+      wdir: ./../
+      cmd:
+        - mkdir -p ${general.write_directory}
+        - >
+          Rscript src/R/eval/compute_metrics.r 
+          --ground_truth ${general.dataset_file}
+          --predictions  ${general.write_directory}/${item}/${combining_scores.output_file}
+          --ordinal_ranking ${eval.ordinal_ranking}
+          --ignore_unmatched_docs FALSE
+          --out_folder ${general.write_directory}/${item}
+      params:
+        - eval.ordinal_ranking
+      deps:
+        - src/R/eval/compute_metrics.r
+        - ${general.write_directory}/${item}/${combining_scores.output_file}
+        - ${general.dataset_file}
+      outs:
+        - ${general.write_directory}/${item}/pr_curve_plot.svg:
+            cache: false
+        - ${general.write_directory}/${item}/stratified_results.arrow
+      plots:
+          - ${general.write_directory}/${item}/pr_curve.csv:
+              x: recall
+              y: precision
+      metrics:
+        - ${general.write_directory}/${item}/f1_opt.json:
+            cache: false 
+        - ${general.write_directory}/${item}/rprec_opt.json:
+            cache: false 
+        - ${general.write_directory}/${item}/prec_opt.json:
+            cache: false 
+        - ${general.write_directory}/${item}/rec_opt.json:
+            cache: false 
+        - ${general.write_directory}/${item}/pr_auc.json:
+            cache: false 
+

@@ -1,0 +1,3266 @@
+schema: '2.0'
+stages:
+  single_model_metrics@model1-prompt0:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/alltypes-de-abstitle-8-0/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B/alltypes-de-abstitle-8-0/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/alltypes-de-abstitle-8-0/predictions.csv
+      hash: md5
+      md5: a4caaa45189c2a50d58d047c81f214f6
+      size: 325203
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/alltypes-de-abstitle-8-0/f1.json
+      hash: md5
+      md5: cba25c06ab166797b46308e2c97a4d81
+      size: 30
+    - path: results//mistral-7B/alltypes-de-abstitle-8-0/prec.json
+      hash: md5
+      md5: d8eea1244dbdd2f1e997b32409fcf815
+      size: 33
+    - path: results//mistral-7B/alltypes-de-abstitle-8-0/rec.json
+      hash: md5
+      md5: 56a96d6183da85894a72b56324cb0a06
+      size: 32
+    - path: results//mistral-7B/alltypes-de-abstitle-8-0/rprec.json
+      hash: md5
+      md5: 77824fb1494c9171cff9aa09bed0f330
+      size: 34
+    - path: results//mistral-7B/alltypes-de-abstitle-8-0/stratified_results.arrow
+      hash: md5
+      md5: 0d3d3e4bd401719ffd115085de057680
+      size: 3546
+  single_model_metrics@model0-prompt0:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/alltypes-de-abstitle-8-0/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama-32-3B/alltypes-de-abstitle-8-0/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-0/predictions.csv
+      hash: md5
+      md5: a7189607391ded7f854c5daced42d19b
+      size: 472317
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-0/f1.json
+      hash: md5
+      md5: 587041fab2ac687e72c58ac70f4254c0
+      size: 31
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-0/prec.json
+      hash: md5
+      md5: b2b6c6af4e58d56f11e9d7067db46936
+      size: 33
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-0/rec.json
+      hash: md5
+      md5: 1c1a3c3eae5b9c27319c35aa55c05c90
+      size: 32
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-0/rprec.json
+      hash: md5
+      md5: 4c11338c7e6658a006101534394fe55c
+      size: 34
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-0/stratified_results.arrow
+      hash: md5
+      md5: c7146567954d901eb0dff52c06779547
+      size: 3498
+  collect_stratified_results:
+    cmd:
+    - "Rscript src/R/eval/collect_stratified_results.r \\\n  results//*/*/stratified_results.arrow
+      \\\n  --output results//stratified_results_by_model_and_prompt.arrow\n"
+    deps:
+    - path: src/R/eval/collect_stratified_results.r
+      hash: md5
+      md5: c0f6d626e91351bfed75ea46100e428c
+      size: 918
+    outs:
+    - path: results//stratified_results_by_model_and_prompt.arrow
+      hash: md5
+      md5: fd7d7f54caaea3b39a0e63f8f507b1c8
+      size: 162690
+  compute_metrics:
+    cmd:
+    - mkdir -p results/
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//predictions_with_combined_scores.csv --ordinal_ranking
+      false --ignore_unmatched_docs FALSE --out_folder results/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: ae108d3a4abb74553b8d3cb684a1bef1
+      size: 131211
+    - path: results//predictions_with_combined_scores.csv
+      hash: md5
+      md5: 4ae32ae149c83ed3b435b95cb771c181
+      size: 160277
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//f1_opt.json
+      hash: md5
+      md5: 3249b3801c53f015275e8c16b30e77a8
+      size: 31
+    - path: results//pr_auc.json
+      hash: md5
+      md5: 1b01afb5eb3790c9374b0a146d5bbbbb
+      size: 29
+    - path: results//pr_curve.csv
+      hash: md5
+      md5: 2a84125a67ae2b96fa3c1474b9577f1c
+      size: 142082
+    - path: results//pr_curve_plot.svg
+      hash: md5
+      md5: ba0348fcbcc53788d0b5604edf49b7e5
+      size: 384469
+    - path: results//prec_opt.json
+      hash: md5
+      md5: c739c5de3cb90fb14238413c65b09067
+      size: 20
+    - path: results//rec_opt.json
+      hash: md5
+      md5: 944605bbdd52aa3ee9aaba45cacc6bd0
+      size: 32
+    - path: results//rprec_opt.json
+      hash: md5
+      md5: dc2b94d97b223789b0ee0da124ea62c9
+      size: 21
+    - path: results//stratified_results.arrow
+      hash: md5
+      md5: f911ce67a34a811d9770f91ca4f36619
+      size: 2498
+  single_model_metrics@model0-prompt1:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/highlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama-32-3B/highlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/highlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 005f74c3571093083f561a7ac624e25e
+      size: 440980
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/highlemma-fewlabels/f1.json
+      hash: md5
+      md5: 816daff68bf5febad3f924c5a071e62d
+      size: 31
+    - path: results//llama-32-3B/highlemma-fewlabels/prec.json
+      hash: md5
+      md5: bfd5d789e0900b424c5e28a26ae13f8f
+      size: 33
+    - path: results//llama-32-3B/highlemma-fewlabels/rec.json
+      hash: md5
+      md5: 92278ba4eabcc56ce5d3281bfbab9834
+      size: 32
+    - path: results//llama-32-3B/highlemma-fewlabels/rprec.json
+      hash: md5
+      md5: c4d8c076c807f371f7036a9960f27158
+      size: 34
+    - path: results//llama-32-3B/highlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 3fd2e225bc4b06a3f10f001ecbb647e7
+      size: 3546
+  single_model_metrics@model0-prompt2:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/highlemma-manylabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama-32-3B/highlemma-manylabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/highlemma-manylabels/predictions.csv
+      hash: md5
+      md5: 5bca7deeacf5ea4c5b8628e06ccffefe
+      size: 513768
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/highlemma-manylabels/f1.json
+      hash: md5
+      md5: 7f810a80a7713b50d51e8652e8f7e797
+      size: 31
+    - path: results//llama-32-3B/highlemma-manylabels/prec.json
+      hash: md5
+      md5: 7b15e7d6aa299fa292a30f0c58b7e026
+      size: 33
+    - path: results//llama-32-3B/highlemma-manylabels/rec.json
+      hash: md5
+      md5: ae274391a20399e16877d6c1011c4aaf
+      size: 32
+    - path: results//llama-32-3B/highlemma-manylabels/rprec.json
+      hash: md5
+      md5: 959efff9ae053eb81bacf1e40336beb7
+      size: 34
+    - path: results//llama-32-3B/highlemma-manylabels/stratified_results.arrow
+      hash: md5
+      md5: d485155d4c533b05812d5bda40e9c4b9
+      size: 3506
+  single_model_metrics@model0-prompt3:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/lowlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama-32-3B/lowlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/lowlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 55b4776ea8aa40b0a2cf76d06b3f89c5
+      size: 429268
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/lowlemma-fewlabels/f1.json
+      hash: md5
+      md5: 0c081b4e4cd1fd1d2f46d97fe1cf44c3
+      size: 31
+    - path: results//llama-32-3B/lowlemma-fewlabels/prec.json
+      hash: md5
+      md5: 40902f48f4c7e08a19e6c04bbceaca62
+      size: 32
+    - path: results//llama-32-3B/lowlemma-fewlabels/rec.json
+      hash: md5
+      md5: 10bdcc947ac0d72b1dadaa733583473c
+      size: 32
+    - path: results//llama-32-3B/lowlemma-fewlabels/rprec.json
+      hash: md5
+      md5: c60ddc5c95672e4f3645a7cc4746dd09
+      size: 34
+    - path: results//llama-32-3B/lowlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: b289ed2f48a884535b12513723be09a0
+      size: 3506
+  single_model_metrics@model0-prompt4:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/alltypes-de-abstitle-8-2/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama-32-3B/alltypes-de-abstitle-8-2/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-2/predictions.csv
+      hash: md5
+      md5: 21f402f2583e8b6f83fbff6d4df97750
+      size: 452807
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-2/f1.json
+      hash: md5
+      md5: 3884e9f114b10cc21de6de3cea5eace9
+      size: 31
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-2/prec.json
+      hash: md5
+      md5: 7716a953b5df9d8f7a3995d03c3a56a8
+      size: 33
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-2/rec.json
+      hash: md5
+      md5: c851fbb5e8e1dafebc74b6fa2feaccfd
+      size: 32
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-2/rprec.json
+      hash: md5
+      md5: 685b08fb882780b3f6690a27d35929d2
+      size: 34
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-2/stratified_results.arrow
+      hash: md5
+      md5: 7cdad26f39f217e11179d150dac16716
+      size: 3490
+  single_model_metrics@model0-prompt5:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/alltypes-de-abstitle-8-3/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama-32-3B/alltypes-de-abstitle-8-3/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-3/predictions.csv
+      hash: md5
+      md5: cf56801dabcce65a55364125b5842888
+      size: 483192
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-3/f1.json
+      hash: md5
+      md5: 1b35ca5873174eda52c862d8abcbbdb0
+      size: 31
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-3/prec.json
+      hash: md5
+      md5: fce93b1f0afe1e56111c6de7a00ea8d9
+      size: 33
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-3/rec.json
+      hash: md5
+      md5: 0b6fde787b61c7d14706a790884cc3f1
+      size: 32
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-3/rprec.json
+      hash: md5
+      md5: ff1c2a2108e5ccf47372668c50dfadbd
+      size: 34
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-3/stratified_results.arrow
+      hash: md5
+      md5: 6a86f097312d3e6308c51b603f9327c2
+      size: 3514
+  single_model_metrics@model0-prompt6:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/alltypes-de-abstitle-8-4/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama-32-3B/alltypes-de-abstitle-8-4/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-4/predictions.csv
+      hash: md5
+      md5: 664fd490ee20a089020391739b4118cd
+      size: 471553
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-4/f1.json
+      hash: md5
+      md5: daf13d681b5f64a32b1e1b74f4c2cba6
+      size: 31
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-4/prec.json
+      hash: md5
+      md5: 695215b1666a39871be887c920edc55c
+      size: 33
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-4/rec.json
+      hash: md5
+      md5: b39ef1d7eade9071cf3918f0a5d8053b
+      size: 31
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-4/rprec.json
+      hash: md5
+      md5: c5f9f3bec674a5ec098be326d02cd1d9
+      size: 33
+    - path: results//llama-32-3B/alltypes-de-abstitle-8-4/stratified_results.arrow
+      hash: md5
+      md5: 09d6a351f83aa711f3a276f3bddb6da0
+      size: 3514
+  single_model_metrics@model0-prompt7:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/english-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama-32-3B/english-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/english-0-8/predictions.csv
+      hash: md5
+      md5: 2d4de857b237cfaca08ba67eabc80e80
+      size: 451284
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/english-0-8/f1.json
+      hash: md5
+      md5: f3d153c8b4a9db36427a4c94c03c340e
+      size: 31
+    - path: results//llama-32-3B/english-0-8/prec.json
+      hash: md5
+      md5: 21dc7ffc86014afd6766dd3aaa11a188
+      size: 33
+    - path: results//llama-32-3B/english-0-8/rec.json
+      hash: md5
+      md5: cbce00dce57de50afc3835584baaa475
+      size: 32
+    - path: results//llama-32-3B/english-0-8/rprec.json
+      hash: md5
+      md5: 53a35c63b16985ec33d641ed8cfbd28b
+      size: 34
+    - path: results//llama-32-3B/english-0-8/stratified_results.arrow
+      hash: md5
+      md5: d072a9c74f48014db38ba75a60f95b97
+      size: 3474
+  single_model_metrics@model0-prompt8:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/english-2-12/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama-32-3B/english-2-12/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/english-2-12/predictions.csv
+      hash: md5
+      md5: cba2db86ee8f2553d3e32a22fc840816
+      size: 474889
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/english-2-12/f1.json
+      hash: md5
+      md5: a74a9feae154085cf372a2e256afe6e9
+      size: 31
+    - path: results//llama-32-3B/english-2-12/prec.json
+      hash: md5
+      md5: 0f1415894962a1a1e745e17d72011b5b
+      size: 33
+    - path: results//llama-32-3B/english-2-12/rec.json
+      hash: md5
+      md5: 5294753d68f13b585b256090170aa15b
+      size: 32
+    - path: results//llama-32-3B/english-2-12/rprec.json
+      hash: md5
+      md5: e8d066b576a04b89a3675a481a9503af
+      size: 34
+    - path: results//llama-32-3B/english-2-12/stratified_results.arrow
+      hash: md5
+      md5: fdf2f59a4bf31b4af7f758da168af39c
+      size: 3474
+  single_model_metrics@model0-prompt9:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama-32-3B/mixed-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama-32-3B/mixed-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama-32-3B/mixed-0-8/predictions.csv
+      hash: md5
+      md5: 196521cd08d2b13353b2d3da176148e4
+      size: 483817
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama-32-3B/mixed-0-8/f1.json
+      hash: md5
+      md5: 8fbf1f698450da78156257cd67e1073f
+      size: 30
+    - path: results//llama-32-3B/mixed-0-8/prec.json
+      hash: md5
+      md5: a34e64bf59d06174fa444db4503638eb
+      size: 33
+    - path: results//llama-32-3B/mixed-0-8/rec.json
+      hash: md5
+      md5: c5e32e0673c3e1eca08a06238610106b
+      size: 32
+    - path: results//llama-32-3B/mixed-0-8/rprec.json
+      hash: md5
+      md5: 6e4a2c3350e4108b8598b29f264a2fd3
+      size: 34
+    - path: results//llama-32-3B/mixed-0-8/stratified_results.arrow
+      hash: md5
+      md5: ab0286291745951a73ae7ec12b57999b
+      size: 3490
+  single_model_metrics@model1-prompt1:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/highlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B/highlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/highlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 5781c331667eb229342de3e4055ab159
+      size: 105118
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/highlemma-fewlabels/f1.json
+      hash: md5
+      md5: 064d71c929147ad1e463b0bd7cbdaab5
+      size: 31
+    - path: results//mistral-7B/highlemma-fewlabels/prec.json
+      hash: md5
+      md5: 50f3cb32a599294d62c7b190eae34b04
+      size: 33
+    - path: results//mistral-7B/highlemma-fewlabels/rec.json
+      hash: md5
+      md5: 873bc5936048bdea0180e2bbaf651ac2
+      size: 32
+    - path: results//mistral-7B/highlemma-fewlabels/rprec.json
+      hash: md5
+      md5: a8c65cea620828332c6726ece4046d8c
+      size: 34
+    - path: results//mistral-7B/highlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 31ebfe179215d149eb85bc02bdb610bd
+      size: 3506
+  single_model_metrics@model1-prompt2:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/highlemma-manylabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B/highlemma-manylabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/highlemma-manylabels/predictions.csv
+      hash: md5
+      md5: 45312ace740e4c0f11cd8d7c54569790
+      size: 370302
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/highlemma-manylabels/f1.json
+      hash: md5
+      md5: 640e86011cea753e485ab53859842a17
+      size: 31
+    - path: results//mistral-7B/highlemma-manylabels/prec.json
+      hash: md5
+      md5: dce7d0af16a63b0a0bb026466be7d577
+      size: 33
+    - path: results//mistral-7B/highlemma-manylabels/rec.json
+      hash: md5
+      md5: b0d76f241c1b004f422e73ebc2e9494f
+      size: 32
+    - path: results//mistral-7B/highlemma-manylabels/rprec.json
+      hash: md5
+      md5: 407a46a961a735a4efa5d6cddf1533a5
+      size: 34
+    - path: results//mistral-7B/highlemma-manylabels/stratified_results.arrow
+      hash: md5
+      md5: 006e405ce963a46e8b7fbfef749b9183
+      size: 3530
+  single_model_metrics@model1-prompt3:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/lowlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B/lowlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/lowlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 521264f3fd8d1d50b6975c31732fe183
+      size: 133345
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/lowlemma-fewlabels/f1.json
+      hash: md5
+      md5: a5620967a3ef853be6f2abb6f9012c3a
+      size: 31
+    - path: results//mistral-7B/lowlemma-fewlabels/prec.json
+      hash: md5
+      md5: 882306fbeaeb9a8a1613cdf4379265da
+      size: 33
+    - path: results//mistral-7B/lowlemma-fewlabels/rec.json
+      hash: md5
+      md5: 2c202e5fb5da0b10df876a5c0cbb3580
+      size: 32
+    - path: results//mistral-7B/lowlemma-fewlabels/rprec.json
+      hash: md5
+      md5: fe490e1b60cbcb637fb343a6bdc7fb11
+      size: 34
+    - path: results//mistral-7B/lowlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 754ea7f66bbf72690890042f60f35809
+      size: 3506
+  single_model_metrics@model1-prompt4:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/alltypes-de-abstitle-8-2/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B/alltypes-de-abstitle-8-2/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/alltypes-de-abstitle-8-2/predictions.csv
+      hash: md5
+      md5: b3d06f5dbc1804a7736993f2b485a412
+      size: 165238
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/alltypes-de-abstitle-8-2/f1.json
+      hash: md5
+      md5: a04452c7087ce4d7432347497fd8f390
+      size: 31
+    - path: results//mistral-7B/alltypes-de-abstitle-8-2/prec.json
+      hash: md5
+      md5: 23cd85fd2493b155ce85d26609ebabd7
+      size: 33
+    - path: results//mistral-7B/alltypes-de-abstitle-8-2/rec.json
+      hash: md5
+      md5: f542c6c47557969f755bfd4581392c6a
+      size: 32
+    - path: results//mistral-7B/alltypes-de-abstitle-8-2/rprec.json
+      hash: md5
+      md5: 0c833a7ecb46f22a06f8823c90562a3a
+      size: 34
+    - path: results//mistral-7B/alltypes-de-abstitle-8-2/stratified_results.arrow
+      hash: md5
+      md5: 34672b66970b6435ea75de39bd0f0f55
+      size: 3546
+  single_model_metrics@model1-prompt5:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/alltypes-de-abstitle-8-3/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B/alltypes-de-abstitle-8-3/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/alltypes-de-abstitle-8-3/predictions.csv
+      hash: md5
+      md5: 69e63b487176e12ff89e250501d6a687
+      size: 279575
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/alltypes-de-abstitle-8-3/f1.json
+      hash: md5
+      md5: 1062cb4a79374226ae7f2324546406a9
+      size: 31
+    - path: results//mistral-7B/alltypes-de-abstitle-8-3/prec.json
+      hash: md5
+      md5: 4c25d5f15e6765e2222e9166bbc9d6a0
+      size: 33
+    - path: results//mistral-7B/alltypes-de-abstitle-8-3/rec.json
+      hash: md5
+      md5: 451199863caa2a3bca46ba782e009237
+      size: 32
+    - path: results//mistral-7B/alltypes-de-abstitle-8-3/rprec.json
+      hash: md5
+      md5: ebf2de0ef2a46fea18fc66eac23cb618
+      size: 34
+    - path: results//mistral-7B/alltypes-de-abstitle-8-3/stratified_results.arrow
+      hash: md5
+      md5: cb5dbfe5b12492854b30fada628f894e
+      size: 3538
+  single_model_metrics@model1-prompt6:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/alltypes-de-abstitle-8-4/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B/alltypes-de-abstitle-8-4/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/alltypes-de-abstitle-8-4/predictions.csv
+      hash: md5
+      md5: 4180b7046cf7bcda9bac1791e372bdea
+      size: 247209
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/alltypes-de-abstitle-8-4/f1.json
+      hash: md5
+      md5: 0d629ab25854d4619417fcaa778fe052
+      size: 31
+    - path: results//mistral-7B/alltypes-de-abstitle-8-4/prec.json
+      hash: md5
+      md5: d982176d29a27a73cda5fc58c8c6316f
+      size: 33
+    - path: results//mistral-7B/alltypes-de-abstitle-8-4/rec.json
+      hash: md5
+      md5: e3966f7619aecf971fb89dc9e1930d9c
+      size: 32
+    - path: results//mistral-7B/alltypes-de-abstitle-8-4/rprec.json
+      hash: md5
+      md5: 752c8de1f267f1c602bad9f75cecd698
+      size: 34
+    - path: results//mistral-7B/alltypes-de-abstitle-8-4/stratified_results.arrow
+      hash: md5
+      md5: 9a530f38c922de66d4c937f890f4430a
+      size: 3530
+  single_model_metrics@model1-prompt7:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/english-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B/english-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/english-0-8/predictions.csv
+      hash: md5
+      md5: 862814ee5c73ef1ea4b6a1aca20680a1
+      size: 287776
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/english-0-8/f1.json
+      hash: md5
+      md5: 03b5c364f669511b50bdc05906bf29db
+      size: 31
+    - path: results//mistral-7B/english-0-8/prec.json
+      hash: md5
+      md5: 4ca9e668e80f4c0b21ee10a7b215c581
+      size: 33
+    - path: results//mistral-7B/english-0-8/rec.json
+      hash: md5
+      md5: b27fc13c5b0c4e886e89197d61591137
+      size: 32
+    - path: results//mistral-7B/english-0-8/rprec.json
+      hash: md5
+      md5: e8aaee1022f6365ed14a6aae94002f57
+      size: 24
+    - path: results//mistral-7B/english-0-8/stratified_results.arrow
+      hash: md5
+      md5: d2bb9c7f0c745c4a2f49fe814ab8d22f
+      size: 3514
+  single_model_metrics@model1-prompt8:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/english-2-12/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B/english-2-12/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/english-2-12/predictions.csv
+      hash: md5
+      md5: 85c8f1e17df789fa0b756e42b4b4134f
+      size: 266390
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/english-2-12/f1.json
+      hash: md5
+      md5: 74efae51effa19e9de2258a3c0273180
+      size: 31
+    - path: results//mistral-7B/english-2-12/prec.json
+      hash: md5
+      md5: 976570307e15ede36d0a2dbc176cac58
+      size: 33
+    - path: results//mistral-7B/english-2-12/rec.json
+      hash: md5
+      md5: 40c5aed919e77555675776c1a92a4bf0
+      size: 32
+    - path: results//mistral-7B/english-2-12/rprec.json
+      hash: md5
+      md5: e4c8f680f3e9af0f024aeb9e60baa47d
+      size: 34
+    - path: results//mistral-7B/english-2-12/stratified_results.arrow
+      hash: md5
+      md5: d0ed847bdede1e857e949086780e4e98
+      size: 3522
+  single_model_metrics@model1-prompt9:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B/mixed-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B/mixed-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B/mixed-0-8/predictions.csv
+      hash: md5
+      md5: b28d98b294e5f4c0c04fb5dcf88812a8
+      size: 278944
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B/mixed-0-8/f1.json
+      hash: md5
+      md5: 1cc88302d80166b1f0872f35bf0defc5
+      size: 30
+    - path: results//mistral-7B/mixed-0-8/prec.json
+      hash: md5
+      md5: 2c5511203753527781ba763532c43a45
+      size: 33
+    - path: results//mistral-7B/mixed-0-8/rec.json
+      hash: md5
+      md5: 3e5aaab98917b56fc082f6757cb6e089
+      size: 32
+    - path: results//mistral-7B/mixed-0-8/rprec.json
+      hash: md5
+      md5: 4eb9ba3c4ca3f1f4246a997618698c87
+      size: 34
+    - path: results//mistral-7B/mixed-0-8/stratified_results.arrow
+      hash: md5
+      md5: a80d10eee5367291d60b8e0c5e2a82f8
+      size: 3530
+  single_model_metrics@model2-prompt0:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/alltypes-de-abstitle-8-0/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B-0p3/alltypes-de-abstitle-8-0/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-0/predictions.csv
+      hash: md5
+      md5: 71ace2d46e5d3a78d15e55ac71130b35
+      size: 440338
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-0/f1.json
+      hash: md5
+      md5: f77d2214182dc76f8bdeaeb8fe02e83a
+      size: 31
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-0/prec.json
+      hash: md5
+      md5: e71a3a9c8efe7aafa476964aa0ce758a
+      size: 33
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-0/rec.json
+      hash: md5
+      md5: 3e9d209d287d2ec9b35354260f81586d
+      size: 32
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-0/rprec.json
+      hash: md5
+      md5: 04fe83982b2ab07227ca78d9ab8e7730
+      size: 34
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-0/stratified_results.arrow
+      hash: md5
+      md5: d4c08ce7969fe60c9dc2ea23dd348626
+      size: 3514
+  single_model_metrics@model2-prompt1:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/highlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B-0p3/highlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/highlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 12b82a122da953cd26e389041e4361d5
+      size: 137250
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/highlemma-fewlabels/f1.json
+      hash: md5
+      md5: 4bc601875531022b99a2dd32e1b7c2dc
+      size: 31
+    - path: results//mistral-7B-0p3/highlemma-fewlabels/prec.json
+      hash: md5
+      md5: 3d4909a34d2b60fb767228a25327c857
+      size: 33
+    - path: results//mistral-7B-0p3/highlemma-fewlabels/rec.json
+      hash: md5
+      md5: c0eef765e7155412f52d96d2e8b5377c
+      size: 32
+    - path: results//mistral-7B-0p3/highlemma-fewlabels/rprec.json
+      hash: md5
+      md5: db1174e93edc174e35f928a3264eeb0a
+      size: 34
+    - path: results//mistral-7B-0p3/highlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 36cb180f4ca66398df0735e5d1f96cba
+      size: 3546
+  single_model_metrics@model2-prompt2:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/highlemma-manylabels/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B-0p3/highlemma-manylabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/highlemma-manylabels/predictions.csv
+      hash: md5
+      md5: 6ac33a970bf6b7fe0769310b45ad65e4
+      size: 449610
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/highlemma-manylabels/f1.json
+      hash: md5
+      md5: 5440147dbf1e4b7603d30c9c648cfe75
+      size: 31
+    - path: results//mistral-7B-0p3/highlemma-manylabels/prec.json
+      hash: md5
+      md5: 980d1a7fb1c43ef4ed83f004e1db095d
+      size: 33
+    - path: results//mistral-7B-0p3/highlemma-manylabels/rec.json
+      hash: md5
+      md5: c7cf2d87d458748a8a40b985910cc03d
+      size: 32
+    - path: results//mistral-7B-0p3/highlemma-manylabels/rprec.json
+      hash: md5
+      md5: a06d79b9d13acb13f4aecb410013f1a5
+      size: 34
+    - path: results//mistral-7B-0p3/highlemma-manylabels/stratified_results.arrow
+      hash: md5
+      md5: 42a1f3eb47af0004d17854ce703a7e32
+      size: 3498
+  single_model_metrics@model2-prompt3:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/lowlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B-0p3/lowlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/lowlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 85414cb4fac829301839795e371d505a
+      size: 155251
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/lowlemma-fewlabels/f1.json
+      hash: md5
+      md5: ff42602d682239b607b84e503816fac2
+      size: 31
+    - path: results//mistral-7B-0p3/lowlemma-fewlabels/prec.json
+      hash: md5
+      md5: b2e5a26cfc1f76415085a9f54ed0b788
+      size: 33
+    - path: results//mistral-7B-0p3/lowlemma-fewlabels/rec.json
+      hash: md5
+      md5: ff98ab1285e8b33d2a36dbf2c11da675
+      size: 32
+    - path: results//mistral-7B-0p3/lowlemma-fewlabels/rprec.json
+      hash: md5
+      md5: a81df3b992f7c63af81219678b584365
+      size: 34
+    - path: results//mistral-7B-0p3/lowlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 6bd4b4d2e7330a3778b91345e2c636b0
+      size: 3522
+  single_model_metrics@model2-prompt4:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/alltypes-de-abstitle-8-2/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B-0p3/alltypes-de-abstitle-8-2/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-2/predictions.csv
+      hash: md5
+      md5: c3599629ac5364c68e50d2a57881c474
+      size: 226412
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-2/f1.json
+      hash: md5
+      md5: 7a8e8a0fe4a41f96135a6ec070bf5886
+      size: 30
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-2/prec.json
+      hash: md5
+      md5: ea2869f01a45e32457149d8ba8d3b632
+      size: 33
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-2/rec.json
+      hash: md5
+      md5: 4017942c1eaa8bcadfdfa27460a1bdee
+      size: 32
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-2/rprec.json
+      hash: md5
+      md5: 9f73c9969d40240c814f99a34df2f4a6
+      size: 34
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-2/stratified_results.arrow
+      hash: md5
+      md5: 714a22056ff29f3dbbc08385eb67b0d7
+      size: 3514
+  single_model_metrics@model2-prompt5:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/alltypes-de-abstitle-8-3/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B-0p3/alltypes-de-abstitle-8-3/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-3/predictions.csv
+      hash: md5
+      md5: 0e2da4b4b2e5e9b9ae65b1f7342e23dc
+      size: 321133
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-3/f1.json
+      hash: md5
+      md5: c3c4782c5663bfbe001eeddc85be7551
+      size: 31
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-3/prec.json
+      hash: md5
+      md5: acac66ac567edea01ab2825b2c2bf61f
+      size: 33
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-3/rec.json
+      hash: md5
+      md5: 8746ba5bfd59ee4715b6e58682ce43c2
+      size: 32
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-3/rprec.json
+      hash: md5
+      md5: 9e8176a904ee66b575b00ce737adcd69
+      size: 34
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-3/stratified_results.arrow
+      hash: md5
+      md5: 3e9f909f779e3f68ad22d69725ce04e0
+      size: 3514
+  single_model_metrics@model2-prompt6:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/alltypes-de-abstitle-8-4/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-7B-0p3/alltypes-de-abstitle-8-4/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-4/predictions.csv
+      hash: md5
+      md5: c97889ff21b215a4e723a36b34dd8d3d
+      size: 222816
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-4/f1.json
+      hash: md5
+      md5: 16bca9c0e49c1830ad322279c8924040
+      size: 31
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-4/prec.json
+      hash: md5
+      md5: 89820ba28a359d6687fe93949a85e9d3
+      size: 33
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-4/rec.json
+      hash: md5
+      md5: 8343a0335bad71f86c3418d6079bffc7
+      size: 32
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-4/rprec.json
+      hash: md5
+      md5: 5146bec148de7a53f3359024d9dc4bdb
+      size: 34
+    - path: results//mistral-7B-0p3/alltypes-de-abstitle-8-4/stratified_results.arrow
+      hash: md5
+      md5: 227374a15a022ef09e25893d7230bf46
+      size: 3522
+  single_model_metrics@model2-prompt7:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/english-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B-0p3/english-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/english-0-8/predictions.csv
+      hash: md5
+      md5: 82dbf29d7f091155b750eb1510abce8e
+      size: 370536
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/english-0-8/f1.json
+      hash: md5
+      md5: 95cf198168553d13d4e59fa6c7f89187
+      size: 31
+    - path: results//mistral-7B-0p3/english-0-8/prec.json
+      hash: md5
+      md5: 9037cbafd1ea64d365cab4eccdc0df2e
+      size: 32
+    - path: results//mistral-7B-0p3/english-0-8/rec.json
+      hash: md5
+      md5: 8b6bfb38ced6d5ef9cc5bb576658c175
+      size: 32
+    - path: results//mistral-7B-0p3/english-0-8/rprec.json
+      hash: md5
+      md5: e6f30f9b786e69844a4841958cd85fed
+      size: 34
+    - path: results//mistral-7B-0p3/english-0-8/stratified_results.arrow
+      hash: md5
+      md5: ff1efdc68f0a1e201af295138dcae278
+      size: 3514
+  single_model_metrics@model2-prompt8:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/english-2-12/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B-0p3/english-2-12/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/english-2-12/predictions.csv
+      hash: md5
+      md5: 6558eec979c6c8b593bcbc4ebe41906f
+      size: 285848
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/english-2-12/f1.json
+      hash: md5
+      md5: d20f6f8a09599108b0892f37dc52e6f2
+      size: 31
+    - path: results//mistral-7B-0p3/english-2-12/prec.json
+      hash: md5
+      md5: 5fa93c2906eb905f24f971aa1d72ec33
+      size: 33
+    - path: results//mistral-7B-0p3/english-2-12/rec.json
+      hash: md5
+      md5: 5ed4310d171d5b9b4ecc2a603577e654
+      size: 32
+    - path: results//mistral-7B-0p3/english-2-12/rprec.json
+      hash: md5
+      md5: 76559631513805c98f18b92cba79f642
+      size: 33
+    - path: results//mistral-7B-0p3/english-2-12/stratified_results.arrow
+      hash: md5
+      md5: 08c33809e4169e1f3b82f91e17bab9f1
+      size: 3522
+  single_model_metrics@model2-prompt9:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-7B-0p3/mixed-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-7B-0p3/mixed-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-7B-0p3/mixed-0-8/predictions.csv
+      hash: md5
+      md5: 4968594bc2ceec2b94fb5d06b8f29b3c
+      size: 355812
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-7B-0p3/mixed-0-8/f1.json
+      hash: md5
+      md5: b9b4bf229900131a06719b6d4ddea80c
+      size: 31
+    - path: results//mistral-7B-0p3/mixed-0-8/prec.json
+      hash: md5
+      md5: 4c87109d0ce2a379ad01b4764ac6dd76
+      size: 32
+    - path: results//mistral-7B-0p3/mixed-0-8/rec.json
+      hash: md5
+      md5: 47681705daa08ededd7e50c55aaf3f0f
+      size: 31
+    - path: results//mistral-7B-0p3/mixed-0-8/rprec.json
+      hash: md5
+      md5: c4dc8175c3b37091af83886db0a62e9a
+      size: 34
+    - path: results//mistral-7B-0p3/mixed-0-8/stratified_results.arrow
+      hash: md5
+      md5: e79342f7ae054b26016a6a147f7722bb
+      size: 3498
+  single_model_metrics@model3-prompt0:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/predictions.csv
+      hash: md5
+      md5: ae5203f621e5df9677da9adc0b451b22
+      size: 446534
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/f1.json
+      hash: md5
+      md5: fa9eefa23008a273d0211c18fe324641
+      size: 31
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/prec.json
+      hash: md5
+      md5: 44d4cc0fc3c55a3c81b50e882ff1b83c
+      size: 33
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/rec.json
+      hash: md5
+      md5: 4ebb53a323caa27755e9b3fcba6b70ef
+      size: 31
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/rprec.json
+      hash: md5
+      md5: afd588dc0fe3b272c90893b37102bbdc
+      size: 34
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-0/stratified_results.arrow
+      hash: md5
+      md5: 7c8621f5d27acb1dd54d55e2f8fa3b2a
+      size: 3482
+  single_model_metrics@model3-prompt1:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/highlemma-fewlabels/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//openhermes-2p5-7B/highlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/highlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 4f0f9e916dbe798b189fc61f60965374
+      size: 446664
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/highlemma-fewlabels/f1.json
+      hash: md5
+      md5: e94e51c83bd657924b72b60998866f8f
+      size: 31
+    - path: results//openhermes-2p5-7B/highlemma-fewlabels/prec.json
+      hash: md5
+      md5: c7c8808c9b81d9dd7e3a9ff2379c3b24
+      size: 33
+    - path: results//openhermes-2p5-7B/highlemma-fewlabels/rec.json
+      hash: md5
+      md5: 99138cc28ce0be90a4d102229439744a
+      size: 32
+    - path: results//openhermes-2p5-7B/highlemma-fewlabels/rprec.json
+      hash: md5
+      md5: 8a239bbf666341241939f4fa13f5646f
+      size: 34
+    - path: results//openhermes-2p5-7B/highlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 0ae1703ad0809236065f74fa6aec9cbb
+      size: 3506
+  single_model_metrics@model3-prompt2:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/highlemma-manylabels/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//openhermes-2p5-7B/highlemma-manylabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/highlemma-manylabels/predictions.csv
+      hash: md5
+      md5: 8acc5e13b225121979e7dbb48042180e
+      size: 479620
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/highlemma-manylabels/f1.json
+      hash: md5
+      md5: 948b92e1cec2e09ecdd0b38d33ebd5be
+      size: 31
+    - path: results//openhermes-2p5-7B/highlemma-manylabels/prec.json
+      hash: md5
+      md5: 5367b3173eedab9cd7f8ad476822b95f
+      size: 33
+    - path: results//openhermes-2p5-7B/highlemma-manylabels/rec.json
+      hash: md5
+      md5: f0210772c91affa82c6014d65feb2bec
+      size: 32
+    - path: results//openhermes-2p5-7B/highlemma-manylabels/rprec.json
+      hash: md5
+      md5: 8a04fac5fbd35002436084161e00b25a
+      size: 34
+    - path: results//openhermes-2p5-7B/highlemma-manylabels/stratified_results.arrow
+      hash: md5
+      md5: 42acbef49c842aad7f3f1aa37c013f07
+      size: 3506
+  single_model_metrics@model3-prompt3:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/lowlemma-fewlabels/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//openhermes-2p5-7B/lowlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/lowlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: af33e3ba37d78e1c20157facb0b3121d
+      size: 394020
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/lowlemma-fewlabels/f1.json
+      hash: md5
+      md5: cc1f450e136c531684d14ede5c363801
+      size: 31
+    - path: results//openhermes-2p5-7B/lowlemma-fewlabels/prec.json
+      hash: md5
+      md5: 7b130dcc61cd0617d7302c809c17be6d
+      size: 33
+    - path: results//openhermes-2p5-7B/lowlemma-fewlabels/rec.json
+      hash: md5
+      md5: 86d9e7342e74d5157035e43c2f4320c1
+      size: 32
+    - path: results//openhermes-2p5-7B/lowlemma-fewlabels/rprec.json
+      hash: md5
+      md5: a41e2bcdc2b68fff76f1f792d3afe814
+      size: 34
+    - path: results//openhermes-2p5-7B/lowlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 3e402244550c2f444747824e6c0751cf
+      size: 3514
+  single_model_metrics@model3-prompt4:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/predictions.csv
+      hash: md5
+      md5: c2e4e7fefb0a754f56248bd65c79afcb
+      size: 426885
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/f1.json
+      hash: md5
+      md5: 617dc91e564fc03df5348686b829e0ac
+      size: 31
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/prec.json
+      hash: md5
+      md5: 964c696dbbbf048d2bf80758f4b7138b
+      size: 33
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/rec.json
+      hash: md5
+      md5: fa993a29f6f2c9f2c38bb441f656e593
+      size: 32
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/rprec.json
+      hash: md5
+      md5: 7e9da9efead710f2ceec4606a8e23249
+      size: 33
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-2/stratified_results.arrow
+      hash: md5
+      md5: 67993928bca2ca6d50be97030a7744a0
+      size: 3522
+  single_model_metrics@model3-prompt5:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/predictions.csv
+      hash: md5
+      md5: 7a82d38de73da4298d8fe2b03904332b
+      size: 461880
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/f1.json
+      hash: md5
+      md5: 9bed7dd48ccf471a2e2cc177621dbeef
+      size: 30
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/prec.json
+      hash: md5
+      md5: a3fd7e74b6b977fe5e5805e1590b11d7
+      size: 33
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/rec.json
+      hash: md5
+      md5: 28a65b1b8e0ab6d1660587d14fb53711
+      size: 31
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/rprec.json
+      hash: md5
+      md5: 7ea2ab142e44861a9f29386790b21c8c
+      size: 34
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-3/stratified_results.arrow
+      hash: md5
+      md5: d27760ef3c0684378d054d33647e37cf
+      size: 3506
+  single_model_metrics@model3-prompt6:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/predictions.csv
+      hash: md5
+      md5: 30eb151edffc326806c1c09e5b4af39d
+      size: 448271
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/f1.json
+      hash: md5
+      md5: 0b6751e4c203f9b36259bc2a04f6af11
+      size: 31
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/prec.json
+      hash: md5
+      md5: 1866ff04dde59a52e1183e9319cee43a
+      size: 32
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/rec.json
+      hash: md5
+      md5: 2914aab63e543d6c45c9ba13cf6682c1
+      size: 32
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/rprec.json
+      hash: md5
+      md5: 53c372b09253a0a3ff3676631e97e249
+      size: 34
+    - path: results//openhermes-2p5-7B/alltypes-de-abstitle-8-4/stratified_results.arrow
+      hash: md5
+      md5: 6786080b6a2543139dcfafafc38ecad2
+      size: 3474
+  single_model_metrics@model3-prompt7:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/english-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//openhermes-2p5-7B/english-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/english-0-8/predictions.csv
+      hash: md5
+      md5: 08eacbdf6b22f3933ee8391beb6c962d
+      size: 435392
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/english-0-8/f1.json
+      hash: md5
+      md5: 456a39289e1ee514d47d22522851ddd1
+      size: 31
+    - path: results//openhermes-2p5-7B/english-0-8/prec.json
+      hash: md5
+      md5: e353062de507ba52a657fd3d2135e073
+      size: 33
+    - path: results//openhermes-2p5-7B/english-0-8/rec.json
+      hash: md5
+      md5: 8009c1a21db92310a1250f30a6e7c8d5
+      size: 32
+    - path: results//openhermes-2p5-7B/english-0-8/rprec.json
+      hash: md5
+      md5: b77286c923396d6b7f8d4f5fb8c0573b
+      size: 34
+    - path: results//openhermes-2p5-7B/english-0-8/stratified_results.arrow
+      hash: md5
+      md5: 7b3bd1870566615acf3b50ebc9ba6305
+      size: 3482
+  single_model_metrics@model3-prompt8:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/english-2-12/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//openhermes-2p5-7B/english-2-12/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/english-2-12/predictions.csv
+      hash: md5
+      md5: be42afcf9c767f62ab86da20dfd094db
+      size: 448625
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/english-2-12/f1.json
+      hash: md5
+      md5: 4ff5175edc432db6c6608c8ff9502f0e
+      size: 31
+    - path: results//openhermes-2p5-7B/english-2-12/prec.json
+      hash: md5
+      md5: f311b6debfc1330ccfb4e0241255312e
+      size: 33
+    - path: results//openhermes-2p5-7B/english-2-12/rec.json
+      hash: md5
+      md5: 82712fcb5843a09e04409dfb22cd6c26
+      size: 32
+    - path: results//openhermes-2p5-7B/english-2-12/rprec.json
+      hash: md5
+      md5: a442ed77f049f209a2069bcf3c201900
+      size: 34
+    - path: results//openhermes-2p5-7B/english-2-12/stratified_results.arrow
+      hash: md5
+      md5: b924e07c34732cfd73d95258f10f0e5b
+      size: 3506
+  single_model_metrics@model3-prompt9:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//openhermes-2p5-7B/mixed-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//openhermes-2p5-7B/mixed-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//openhermes-2p5-7B/mixed-0-8/predictions.csv
+      hash: md5
+      md5: d5b42d8957efbd553c186f0ce20a0e1e
+      size: 465856
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//openhermes-2p5-7B/mixed-0-8/f1.json
+      hash: md5
+      md5: 8610a4a9c496712add98c0fee573f95f
+      size: 31
+    - path: results//openhermes-2p5-7B/mixed-0-8/prec.json
+      hash: md5
+      md5: 97070ef521ab8532f192ed8c9dfa6c5a
+      size: 33
+    - path: results//openhermes-2p5-7B/mixed-0-8/rec.json
+      hash: md5
+      md5: 9cfd542f53549575f6afe53e132038f0
+      size: 32
+    - path: results//openhermes-2p5-7B/mixed-0-8/rprec.json
+      hash: md5
+      md5: 513bc6ccc65a3b9e708f641ba3d9be2b
+      size: 34
+    - path: results//openhermes-2p5-7B/mixed-0-8/stratified_results.arrow
+      hash: md5
+      md5: 45aaa5827599df0a39eec69c93cd1358
+      size: 3482
+  single_model_metrics@model4-prompt0:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/alltypes-de-abstitle-8-0/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//teuken-7B-0p4/alltypes-de-abstitle-8-0/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-0/predictions.csv
+      hash: md5
+      md5: d5bc75e30ae8d59499b83bd836174d4f
+      size: 1043581
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-0/f1.json
+      hash: md5
+      md5: fae04aa92d4f78e1148a7c19fcf14bfd
+      size: 31
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-0/prec.json
+      hash: md5
+      md5: cc6487baad8bfc8eace2a207dd17812c
+      size: 33
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-0/rec.json
+      hash: md5
+      md5: 5af8e3bf061cf1e45558740076966c6f
+      size: 32
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-0/rprec.json
+      hash: md5
+      md5: 779fd9814df6f40a32d6e8a86461b359
+      size: 34
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-0/stratified_results.arrow
+      hash: md5
+      md5: e78e1d337fc7916d1318c727d392806e
+      size: 3522
+  single_model_metrics@model4-prompt1:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/highlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//teuken-7B-0p4/highlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/highlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 8de5c9c351c0e0c56db8ef8dd436ed10
+      size: 406617
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/highlemma-fewlabels/f1.json
+      hash: md5
+      md5: 9a3c4c3228e9e7bd714bb9d7004b7e34
+      size: 31
+    - path: results//teuken-7B-0p4/highlemma-fewlabels/prec.json
+      hash: md5
+      md5: c00b6bf9172e4c19a3bcb08326b391a1
+      size: 33
+    - path: results//teuken-7B-0p4/highlemma-fewlabels/rec.json
+      hash: md5
+      md5: 4aa05cf72a34a0f3ac0d8fe5a03078c9
+      size: 32
+    - path: results//teuken-7B-0p4/highlemma-fewlabels/rprec.json
+      hash: md5
+      md5: d024d2acd73445cda7dfa6e588bef971
+      size: 34
+    - path: results//teuken-7B-0p4/highlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 1f6b3481a9d5f95eb33d381abb484e96
+      size: 3554
+  single_model_metrics@model4-prompt2:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/highlemma-manylabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//teuken-7B-0p4/highlemma-manylabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/highlemma-manylabels/predictions.csv
+      hash: md5
+      md5: e43539e88254b6f1632a33ba427c1d62
+      size: 118261
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/highlemma-manylabels/f1.json
+      hash: md5
+      md5: 7ddd2b10d6537e804c965c541f351092
+      size: 32
+    - path: results//teuken-7B-0p4/highlemma-manylabels/prec.json
+      hash: md5
+      md5: 7b49f2d86aa6806c5296fee1ea456f87
+      size: 33
+    - path: results//teuken-7B-0p4/highlemma-manylabels/rec.json
+      hash: md5
+      md5: 2f708db754019821f2d1d17e1307578e
+      size: 32
+    - path: results//teuken-7B-0p4/highlemma-manylabels/rprec.json
+      hash: md5
+      md5: 6870ce5b807b7b52477a6bb24fd3d5e4
+      size: 34
+    - path: results//teuken-7B-0p4/highlemma-manylabels/stratified_results.arrow
+      hash: md5
+      md5: e94f834b5a37b951eed7f89bd5f45b5d
+      size: 3530
+  single_model_metrics@model4-prompt3:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/lowlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//teuken-7B-0p4/lowlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/lowlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 3658a0daceaefec6e98a06e0bc8cfb66
+      size: 317819
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/lowlemma-fewlabels/f1.json
+      hash: md5
+      md5: fc1e2ba57fd9abf709d23c86144e1ce8
+      size: 31
+    - path: results//teuken-7B-0p4/lowlemma-fewlabels/prec.json
+      hash: md5
+      md5: 0bdaeb675105711a6c861165a1b82cb2
+      size: 32
+    - path: results//teuken-7B-0p4/lowlemma-fewlabels/rec.json
+      hash: md5
+      md5: 7a90ed373a57cb6e5cc6effa337ac4c2
+      size: 32
+    - path: results//teuken-7B-0p4/lowlemma-fewlabels/rprec.json
+      hash: md5
+      md5: ac9bb2aa38e95112dca92902bcd1a6f8
+      size: 34
+    - path: results//teuken-7B-0p4/lowlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 3d7e9d1cca51b8b10f880b83e3893263
+      size: 3554
+  single_model_metrics@model4-prompt4:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/alltypes-de-abstitle-8-2/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//teuken-7B-0p4/alltypes-de-abstitle-8-2/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-2/predictions.csv
+      hash: md5
+      md5: 3ea422b7362a81c09f92ef04f2f83400
+      size: 668076
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-2/f1.json
+      hash: md5
+      md5: 56b19ddc3f7457d07d030c639e6e514e
+      size: 31
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-2/prec.json
+      hash: md5
+      md5: 65798b80608845432e530bbe5dd0daef
+      size: 33
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-2/rec.json
+      hash: md5
+      md5: 451837dc042c50a60b9bc00147cf2b3b
+      size: 32
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-2/rprec.json
+      hash: md5
+      md5: ad626e436c28a4fb49a984c451ecd4b8
+      size: 34
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-2/stratified_results.arrow
+      hash: md5
+      md5: 3383331c041c1a741b142b9877112abb
+      size: 3546
+  single_model_metrics@model4-prompt5:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/alltypes-de-abstitle-8-3/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//teuken-7B-0p4/alltypes-de-abstitle-8-3/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-3/predictions.csv
+      hash: md5
+      md5: dcb4b00599924465874f71b4751b5bec
+      size: 1099132
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-3/f1.json
+      hash: md5
+      md5: ab9fbf9973ab425373d3e2a40d821901
+      size: 30
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-3/prec.json
+      hash: md5
+      md5: 0d7059afb85e8d4e2e44c7ab3afbb74a
+      size: 33
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-3/rec.json
+      hash: md5
+      md5: 34104628e6098daf7523a3979e276d11
+      size: 32
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-3/rprec.json
+      hash: md5
+      md5: 75b00549a884a1a6b9603184485dd905
+      size: 34
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-3/stratified_results.arrow
+      hash: md5
+      md5: 7c24542638c8ea249a7aa0c32b5d67f4
+      size: 3538
+  single_model_metrics@model4-prompt6:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/alltypes-de-abstitle-8-4/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//teuken-7B-0p4/alltypes-de-abstitle-8-4/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-4/predictions.csv
+      hash: md5
+      md5: f0fdd1b293be44d3c856bd6e7915c93f
+      size: 1174072
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-4/f1.json
+      hash: md5
+      md5: 7a07652e653831025d0227ecb3e84a49
+      size: 31
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-4/prec.json
+      hash: md5
+      md5: 7e1fff55fa95a144ef020621106b2a3f
+      size: 33
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-4/rec.json
+      hash: md5
+      md5: f6bb2e49813ded767f81cf9618c12822
+      size: 32
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-4/rprec.json
+      hash: md5
+      md5: bc36f182eb067ad8e6fe0b22744f01da
+      size: 34
+    - path: results//teuken-7B-0p4/alltypes-de-abstitle-8-4/stratified_results.arrow
+      hash: md5
+      md5: 278d0d2476360be8da899977a9948f7e
+      size: 3522
+  single_model_metrics@model4-prompt7:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/english-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//teuken-7B-0p4/english-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/english-0-8/predictions.csv
+      hash: md5
+      md5: 5bbc8bdfa2c6986af5fcf61edbbbb4da
+      size: 762495
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/english-0-8/f1.json
+      hash: md5
+      md5: ead6d797720f282c652342cc5b5f6f3d
+      size: 31
+    - path: results//teuken-7B-0p4/english-0-8/prec.json
+      hash: md5
+      md5: d1c7f26f5933d4c44dd6f0cd1c2fd314
+      size: 33
+    - path: results//teuken-7B-0p4/english-0-8/rec.json
+      hash: md5
+      md5: e0f60df8d44a917c4e35856f7b2bc791
+      size: 32
+    - path: results//teuken-7B-0p4/english-0-8/rprec.json
+      hash: md5
+      md5: 938e16886c3541dc87e6ed8fa1bcb651
+      size: 34
+    - path: results//teuken-7B-0p4/english-0-8/stratified_results.arrow
+      hash: md5
+      md5: a1135fd0155efddc9233473e530c4d4f
+      size: 3554
+  single_model_metrics@model4-prompt8:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/english-2-12/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//teuken-7B-0p4/english-2-12/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/english-2-12/predictions.csv
+      hash: md5
+      md5: ff611b708c5d93ee39eccae1fbaf2933
+      size: 855257
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/english-2-12/f1.json
+      hash: md5
+      md5: 641640b3f5d2af85d5af2471a69c9ab6
+      size: 31
+    - path: results//teuken-7B-0p4/english-2-12/prec.json
+      hash: md5
+      md5: 0adb5539f8242c9f1e7dd66ea54a0407
+      size: 33
+    - path: results//teuken-7B-0p4/english-2-12/rec.json
+      hash: md5
+      md5: 74d38db7ade779160ce6b43bc540a34b
+      size: 32
+    - path: results//teuken-7B-0p4/english-2-12/rprec.json
+      hash: md5
+      md5: 6167d6985a7fc87fca353cfcf6e06cf0
+      size: 34
+    - path: results//teuken-7B-0p4/english-2-12/stratified_results.arrow
+      hash: md5
+      md5: fc885c68559a706376f873c93bd769e2
+      size: 3562
+  single_model_metrics@model4-prompt9:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//teuken-7B-0p4/mixed-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//teuken-7B-0p4/mixed-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//teuken-7B-0p4/mixed-0-8/predictions.csv
+      hash: md5
+      md5: b4169b0b828d3b560de3e72c682987e8
+      size: 1102890
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//teuken-7B-0p4/mixed-0-8/f1.json
+      hash: md5
+      md5: b98b7e1bfb9233676b8ffa6eed7c2bca
+      size: 31
+    - path: results//teuken-7B-0p4/mixed-0-8/prec.json
+      hash: md5
+      md5: ed3740d4dde6cc58aec5cb0729c24cba
+      size: 33
+    - path: results//teuken-7B-0p4/mixed-0-8/rec.json
+      hash: md5
+      md5: 39916c732c7323188e2d977321ee0dc0
+      size: 32
+    - path: results//teuken-7B-0p4/mixed-0-8/rprec.json
+      hash: md5
+      md5: d134c976f7d065adb6fad18a666e6968
+      size: 34
+    - path: results//teuken-7B-0p4/mixed-0-8/stratified_results.arrow
+      hash: md5
+      md5: 6c18e4e99ca9d17109e12e6379b705be
+      size: 3530
+  single_model_metrics@model5-prompt0:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/alltypes-de-abstitle-8-0/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama31-70B/alltypes-de-abstitle-8-0/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/alltypes-de-abstitle-8-0/predictions.csv
+      hash: md5
+      md5: 8feffd58840d1e8b52e739d56f929422
+      size: 446452
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/alltypes-de-abstitle-8-0/f1.json
+      hash: md5
+      md5: d773a6df9aaedb0c78bb712076216a2f
+      size: 31
+    - path: results//llama31-70B/alltypes-de-abstitle-8-0/prec.json
+      hash: md5
+      md5: 8e4e60417df53bab7fce15bdd69bf557
+      size: 32
+    - path: results//llama31-70B/alltypes-de-abstitle-8-0/rec.json
+      hash: md5
+      md5: 805233b86fafc9e47eff1217ef99dd07
+      size: 32
+    - path: results//llama31-70B/alltypes-de-abstitle-8-0/rprec.json
+      hash: md5
+      md5: b351af39c4ef41e11466c64ab151d215
+      size: 34
+    - path: results//llama31-70B/alltypes-de-abstitle-8-0/stratified_results.arrow
+      hash: md5
+      md5: 25ddc0934b1dbe68a967248f50a6174f
+      size: 3482
+  single_model_metrics@model5-prompt1:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/highlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama31-70B/highlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/highlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 3ee61c43f9dfa8dd35077795195b53e7
+      size: 495786
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/highlemma-fewlabels/f1.json
+      hash: md5
+      md5: 38bae25dc145945629ff0855ab444f20
+      size: 31
+    - path: results//llama31-70B/highlemma-fewlabels/prec.json
+      hash: md5
+      md5: 21d60200ed59bd1e93eacf378766b1b3
+      size: 33
+    - path: results//llama31-70B/highlemma-fewlabels/rec.json
+      hash: md5
+      md5: a01b4118d694acf3b5817065c4fe95d2
+      size: 32
+    - path: results//llama31-70B/highlemma-fewlabels/rprec.json
+      hash: md5
+      md5: ae9cf550883ed14051e2d7481a9220bc
+      size: 34
+    - path: results//llama31-70B/highlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 6dcca204afb7e2431535a1ad0448cf87
+      size: 3466
+  single_model_metrics@model5-prompt2:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/highlemma-manylabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama31-70B/highlemma-manylabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/highlemma-manylabels/predictions.csv
+      hash: md5
+      md5: cef36021825016c1faabdd666c2aa285
+      size: 486202
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/highlemma-manylabels/f1.json
+      hash: md5
+      md5: 88dcb1fa62d5c96f596a21c9ce597f18
+      size: 31
+    - path: results//llama31-70B/highlemma-manylabels/prec.json
+      hash: md5
+      md5: d345a75846cbfe88358967bda445043d
+      size: 33
+    - path: results//llama31-70B/highlemma-manylabels/rec.json
+      hash: md5
+      md5: 98686288367cd820eb5774c410213ff2
+      size: 32
+    - path: results//llama31-70B/highlemma-manylabels/rprec.json
+      hash: md5
+      md5: e254ce0d9e156742c3fa14d834b81dc9
+      size: 34
+    - path: results//llama31-70B/highlemma-manylabels/stratified_results.arrow
+      hash: md5
+      md5: e9a7828e0cc7ec7358b5736901eafae6
+      size: 3482
+  single_model_metrics@model5-prompt3:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/lowlemma-fewlabels/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama31-70B/lowlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/lowlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 5cd035ce92bb235e9e6549597bc7b651
+      size: 486502
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/lowlemma-fewlabels/f1.json
+      hash: md5
+      md5: e12549086003382a929e07215b270721
+      size: 31
+    - path: results//llama31-70B/lowlemma-fewlabels/prec.json
+      hash: md5
+      md5: 97dddfed7d7e057afbe35c4234b7e46d
+      size: 33
+    - path: results//llama31-70B/lowlemma-fewlabels/rec.json
+      hash: md5
+      md5: 8fa29e586c6b4f2bab94a3f5cb1e259d
+      size: 31
+    - path: results//llama31-70B/lowlemma-fewlabels/rprec.json
+      hash: md5
+      md5: 084369c83d50255a0a1945bbbc8f88f8
+      size: 34
+    - path: results//llama31-70B/lowlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: de3366f23480d0d5edc633928f57e75e
+      size: 3482
+  single_model_metrics@model5-prompt4:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/alltypes-de-abstitle-8-2/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama31-70B/alltypes-de-abstitle-8-2/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/alltypes-de-abstitle-8-2/predictions.csv
+      hash: md5
+      md5: dcbf2f2831729105b919cde2d3bed111
+      size: 479179
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/alltypes-de-abstitle-8-2/f1.json
+      hash: md5
+      md5: 5211c9b985c763397165711e38ae680f
+      size: 31
+    - path: results//llama31-70B/alltypes-de-abstitle-8-2/prec.json
+      hash: md5
+      md5: 445fc4ee0c01420533814c27d5bb0817
+      size: 33
+    - path: results//llama31-70B/alltypes-de-abstitle-8-2/rec.json
+      hash: md5
+      md5: 1d967271d24467cf43045b7f8ccdb51a
+      size: 32
+    - path: results//llama31-70B/alltypes-de-abstitle-8-2/rprec.json
+      hash: md5
+      md5: b50dae25ab49f1a5c589ba9413573007
+      size: 34
+    - path: results//llama31-70B/alltypes-de-abstitle-8-2/stratified_results.arrow
+      hash: md5
+      md5: 352f9e46744c6a568521d8533813facb
+      size: 3474
+  single_model_metrics@model5-prompt5:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/alltypes-de-abstitle-8-3/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama31-70B/alltypes-de-abstitle-8-3/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/alltypes-de-abstitle-8-3/predictions.csv
+      hash: md5
+      md5: 5efefadd76efb5e9ac6ce9f8d8d87b47
+      size: 498448
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/alltypes-de-abstitle-8-3/f1.json
+      hash: md5
+      md5: 4dc95643b7bdf7a82c0b416f4c7cb553
+      size: 31
+    - path: results//llama31-70B/alltypes-de-abstitle-8-3/prec.json
+      hash: md5
+      md5: aac9d63a75f205cbef944db9807b6a4d
+      size: 33
+    - path: results//llama31-70B/alltypes-de-abstitle-8-3/rec.json
+      hash: md5
+      md5: b030e6edf8847e31f3c7c534d0091063
+      size: 32
+    - path: results//llama31-70B/alltypes-de-abstitle-8-3/rprec.json
+      hash: md5
+      md5: 1c582cd294dd2c2bff3ee2799b94bda5
+      size: 34
+    - path: results//llama31-70B/alltypes-de-abstitle-8-3/stratified_results.arrow
+      hash: md5
+      md5: a458485c355af0658958fc75d322eb38
+      size: 3474
+  single_model_metrics@model5-prompt6:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/alltypes-de-abstitle-8-4/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//llama31-70B/alltypes-de-abstitle-8-4/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/alltypes-de-abstitle-8-4/predictions.csv
+      hash: md5
+      md5: 2511481ae542d4a96a2b30033f0393d1
+      size: 473818
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/alltypes-de-abstitle-8-4/f1.json
+      hash: md5
+      md5: 3063d91fbf583a96a72f08e84ba4619d
+      size: 30
+    - path: results//llama31-70B/alltypes-de-abstitle-8-4/prec.json
+      hash: md5
+      md5: 7b0ab8aed69b17be5dab663822ec119d
+      size: 33
+    - path: results//llama31-70B/alltypes-de-abstitle-8-4/rec.json
+      hash: md5
+      md5: 32c7db44342008314e8d588f0adf6234
+      size: 32
+    - path: results//llama31-70B/alltypes-de-abstitle-8-4/rprec.json
+      hash: md5
+      md5: 7ebcb0468685bb726cc3b9ed2aee0f74
+      size: 34
+    - path: results//llama31-70B/alltypes-de-abstitle-8-4/stratified_results.arrow
+      hash: md5
+      md5: d2308e59106bd832f1e2991f4eb43ed1
+      size: 3474
+  single_model_metrics@model5-prompt7:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/english-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama31-70B/english-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/english-0-8/predictions.csv
+      hash: md5
+      md5: 8aa94b5c3ec4961e8a1c19bc7b7ae636
+      size: 444165
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/english-0-8/f1.json
+      hash: md5
+      md5: 47a0b2e565e14890fb0bd19abdd6e58b
+      size: 31
+    - path: results//llama31-70B/english-0-8/prec.json
+      hash: md5
+      md5: e9aa5f082f8c26d4c9a9d23824e16612
+      size: 33
+    - path: results//llama31-70B/english-0-8/rec.json
+      hash: md5
+      md5: dd95d56f78b3cd92f2a8340d217ac168
+      size: 32
+    - path: results//llama31-70B/english-0-8/rprec.json
+      hash: md5
+      md5: 5e44b243496b5937f5e4eb26d9bda073
+      size: 34
+    - path: results//llama31-70B/english-0-8/stratified_results.arrow
+      hash: md5
+      md5: b5227bbb3a03c777140c1913c826618e
+      size: 3482
+  single_model_metrics@model5-prompt8:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/english-2-12/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama31-70B/english-2-12/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/english-2-12/predictions.csv
+      hash: md5
+      md5: 9d5f61d7c40c6777b077863f83b8ce04
+      size: 459020
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/english-2-12/f1.json
+      hash: md5
+      md5: c8f9a7daac71eb828fc36642847ed46f
+      size: 31
+    - path: results//llama31-70B/english-2-12/prec.json
+      hash: md5
+      md5: 18cd054a1e79b30ec4c84ce835d70466
+      size: 33
+    - path: results//llama31-70B/english-2-12/rec.json
+      hash: md5
+      md5: 823e0e1ed97388869da958eedcfdf161
+      size: 32
+    - path: results//llama31-70B/english-2-12/rprec.json
+      hash: md5
+      md5: a817981d3a158c491ccfd3a4cb1c710c
+      size: 34
+    - path: results//llama31-70B/english-2-12/stratified_results.arrow
+      hash: md5
+      md5: 5b87958263c9d8b8c26c76b7e088eb8b
+      size: 3482
+  single_model_metrics@model5-prompt9:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//llama31-70B/mixed-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//llama31-70B/mixed-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//llama31-70B/mixed-0-8/predictions.csv
+      hash: md5
+      md5: ae221ec450bc587504dfa3f48825a4c1
+      size: 491168
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//llama31-70B/mixed-0-8/f1.json
+      hash: md5
+      md5: f43b62591cc292ad72a596db5075ecb1
+      size: 31
+    - path: results//llama31-70B/mixed-0-8/prec.json
+      hash: md5
+      md5: 04d897760def71852c8ccc376abfb948
+      size: 33
+    - path: results//llama31-70B/mixed-0-8/rec.json
+      hash: md5
+      md5: aebf8b2fa132a418a60e026527457eec
+      size: 32
+    - path: results//llama31-70B/mixed-0-8/rprec.json
+      hash: md5
+      md5: 7a3cae1b79b0f90405465715eff0c344
+      size: 33
+    - path: results//llama31-70B/mixed-0-8/stratified_results.arrow
+      hash: md5
+      md5: d5f75009a84865f8596ad8a0c1391f2c
+      size: 3474
+  single_model_metrics@model6-prompt0:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/predictions.csv
+      hash: md5
+      md5: 0374a247c137f0394c50ac50bb7a6cfe
+      size: 356610
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/f1.json
+      hash: md5
+      md5: 01f1f2d180e165c9c5c3251ed68cc83b
+      size: 31
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/prec.json
+      hash: md5
+      md5: 8452b5fc60f12798ad55d45852506e60
+      size: 31
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/rec.json
+      hash: md5
+      md5: e29b6e3eef5c5193f7ddbc8e915f8849
+      size: 32
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/rprec.json
+      hash: md5
+      md5: 98ede1592998f97e2380336a5c9cc662
+      size: 34
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-0/stratified_results.arrow
+      hash: md5
+      md5: 66d76452e022877bddeb632bae393ec5
+      size: 3506
+  single_model_metrics@model6-prompt1:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/highlemma-fewlabels/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-8x7B-0p1/highlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/highlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: 4053146ddbc37b4b20aff990f1c8037d
+      size: 132970
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/highlemma-fewlabels/f1.json
+      hash: md5
+      md5: 9fa1e9491df67223c6e6e58da8629319
+      size: 31
+    - path: results//mistral-8x7B-0p1/highlemma-fewlabels/prec.json
+      hash: md5
+      md5: a92632e4512708ecc83ca637e3074525
+      size: 33
+    - path: results//mistral-8x7B-0p1/highlemma-fewlabels/rec.json
+      hash: md5
+      md5: aba0d1fcea19b083fc97c012b0a040c7
+      size: 32
+    - path: results//mistral-8x7B-0p1/highlemma-fewlabels/rprec.json
+      hash: md5
+      md5: 2ad7ca71e8de1f2768ac1a23334f0bb0
+      size: 34
+    - path: results//mistral-8x7B-0p1/highlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: 7df6a2dc4ffbd198144c6fa306836d1c
+      size: 3514
+  single_model_metrics@model6-prompt2:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/highlemma-manylabels/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-8x7B-0p1/highlemma-manylabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/highlemma-manylabels/predictions.csv
+      hash: md5
+      md5: afbc9598962b7910878c81929e36eb80
+      size: 449761
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/highlemma-manylabels/f1.json
+      hash: md5
+      md5: 913a8bf467b49cd31216aa5f1568c240
+      size: 29
+    - path: results//mistral-8x7B-0p1/highlemma-manylabels/prec.json
+      hash: md5
+      md5: 5a2a099102e125e8e3489f5f0d946547
+      size: 33
+    - path: results//mistral-8x7B-0p1/highlemma-manylabels/rec.json
+      hash: md5
+      md5: 020201f360d43690147a9ddc8d3c51e2
+      size: 32
+    - path: results//mistral-8x7B-0p1/highlemma-manylabels/rprec.json
+      hash: md5
+      md5: b8c9362796b301d387e194515875831a
+      size: 34
+    - path: results//mistral-8x7B-0p1/highlemma-manylabels/stratified_results.arrow
+      hash: md5
+      md5: a0409495b1ce974fcbe9e2e2f4433de0
+      size: 3466
+  single_model_metrics@model6-prompt3:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/lowlemma-fewlabels/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-8x7B-0p1/lowlemma-fewlabels/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/lowlemma-fewlabels/predictions.csv
+      hash: md5
+      md5: da9880843d55c2e1c0055058c6c13248
+      size: 128006
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/lowlemma-fewlabels/f1.json
+      hash: md5
+      md5: c7a61f82de3a7d1dbfb5a368e5b99398
+      size: 31
+    - path: results//mistral-8x7B-0p1/lowlemma-fewlabels/prec.json
+      hash: md5
+      md5: 52b1c865f98855de1d34920bb312dbd4
+      size: 33
+    - path: results//mistral-8x7B-0p1/lowlemma-fewlabels/rec.json
+      hash: md5
+      md5: a92d5b0c07c58611c7fb9148afb59bb6
+      size: 32
+    - path: results//mistral-8x7B-0p1/lowlemma-fewlabels/rprec.json
+      hash: md5
+      md5: 6b0e160afdd7b2a211269c29d220318b
+      size: 34
+    - path: results//mistral-8x7B-0p1/lowlemma-fewlabels/stratified_results.arrow
+      hash: md5
+      md5: e83089efc62238239e3868a822298c5e
+      size: 3498
+  single_model_metrics@model6-prompt4:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/predictions.csv
+      hash: md5
+      md5: 2bbf91c6502bf6cb399d89bcc56d588c
+      size: 220781
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/f1.json
+      hash: md5
+      md5: 7ae13dfc9827d37d28b749b2c173266d
+      size: 31
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/prec.json
+      hash: md5
+      md5: 1e109ad0d042b07c243e60c508b90ab4
+      size: 33
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/rec.json
+      hash: md5
+      md5: 279e585304069f2c458f061c153a8da7
+      size: 32
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/rprec.json
+      hash: md5
+      md5: d1ce977a9d8e0e77688e81e5bf0e3313
+      size: 34
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-2/stratified_results.arrow
+      hash: md5
+      md5: d7c8cfe405d83d0058e6dfc6a17f57d8
+      size: 3522
+  single_model_metrics@model6-prompt5:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/predictions.csv
+      hash: md5
+      md5: 47fdb00cf95ea1892f192fa1f6d7ad1f
+      size: 353922
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/f1.json
+      hash: md5
+      md5: b8ef7749d5c08e2be49526e999bf04c8
+      size: 31
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/prec.json
+      hash: md5
+      md5: c053eb37e2ff3b4aceaccba8e001af38
+      size: 33
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/rec.json
+      hash: md5
+      md5: 99697c6b9d953fd2f8bb8fd6bfd8a615
+      size: 32
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/rprec.json
+      hash: md5
+      md5: c659209b7eab1b2b27d523f218876f44
+      size: 34
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-3/stratified_results.arrow
+      hash: md5
+      md5: 70e958b6e6296ade960e40a68a63a963
+      size: 3506
+  single_model_metrics@model6-prompt6:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/predictions.csv
+      --ordinal_ranking false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE
+      --out_folder results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/predictions.csv
+      hash: md5
+      md5: 25dafe878cadcf895e7dc7a53ec92ec6
+      size: 246067
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/f1.json
+      hash: md5
+      md5: a86cf92a5023477f5a1c7bd8be1eacdd
+      size: 31
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/prec.json
+      hash: md5
+      md5: baa9e67c90c4d66ba167542a49d2f188
+      size: 32
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/rec.json
+      hash: md5
+      md5: 29722f592203bb9543adcd44086840c7
+      size: 32
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/rprec.json
+      hash: md5
+      md5: a1f1fe9dd32212edebff6d5be1f0d117
+      size: 34
+    - path: results//mistral-8x7B-0p1/alltypes-de-abstitle-8-4/stratified_results.arrow
+      hash: md5
+      md5: ab9ae3a56301030f579e318651c91c4f
+      size: 3514
+  single_model_metrics@model6-prompt7:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/english-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-8x7B-0p1/english-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/english-0-8/predictions.csv
+      hash: md5
+      md5: 154e10780926ea42c4eb24d2b0aeb6ae
+      size: 256739
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/english-0-8/f1.json
+      hash: md5
+      md5: e92468e39c2c96eb58f1c96f42dce3cf
+      size: 30
+    - path: results//mistral-8x7B-0p1/english-0-8/prec.json
+      hash: md5
+      md5: 4e45ffed2c941eb7812f81b66dd9f4dc
+      size: 32
+    - path: results//mistral-8x7B-0p1/english-0-8/rec.json
+      hash: md5
+      md5: 3507774b35a248523f3321ef80a6ebcd
+      size: 32
+    - path: results//mistral-8x7B-0p1/english-0-8/rprec.json
+      hash: md5
+      md5: ab28fca5260fdd9fc564e5f687e95036
+      size: 34
+    - path: results//mistral-8x7B-0p1/english-0-8/stratified_results.arrow
+      hash: md5
+      md5: 8ad2326a69e386414b0456708bd70bbd
+      size: 3482
+  single_model_metrics@model6-prompt8:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/english-2-12/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-8x7B-0p1/english-2-12/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/english-2-12/predictions.csv
+      hash: md5
+      md5: 1f5ec74a256f0cf993883bb72f118acf
+      size: 266680
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/english-2-12/f1.json
+      hash: md5
+      md5: 61653b1e132a3c014d5d1bfb96e70913
+      size: 30
+    - path: results//mistral-8x7B-0p1/english-2-12/prec.json
+      hash: md5
+      md5: 1bbb0682daccd234bbba55483f7df761
+      size: 33
+    - path: results//mistral-8x7B-0p1/english-2-12/rec.json
+      hash: md5
+      md5: 5fd3e6c8f355f5a2d229044da5afe5a7
+      size: 32
+    - path: results//mistral-8x7B-0p1/english-2-12/rprec.json
+      hash: md5
+      md5: c1cbe34e857d7a3c984889edcab7b40d
+      size: 33
+    - path: results//mistral-8x7B-0p1/english-2-12/stratified_results.arrow
+      hash: md5
+      md5: 3fb5edd7be4f3e15bc1cd721c91d8944
+      size: 3522
+  single_model_metrics@model6-prompt9:
+    cmd:
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//mistral-8x7B-0p1/mixed-0-8/predictions.csv --ordinal_ranking
+      false --set_retrieval_only TRUE --ignore_unmatched_docs FALSE --out_folder results//mistral-8x7B-0p1/mixed-0-8/\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//mistral-8x7B-0p1/mixed-0-8/predictions.csv
+      hash: md5
+      md5: 95924912a335dd249d15e6b29dec5238
+      size: 206857
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//mistral-8x7B-0p1/mixed-0-8/f1.json
+      hash: md5
+      md5: c1f6511aebee95837ad645786e0e72ac
+      size: 30
+    - path: results//mistral-8x7B-0p1/mixed-0-8/prec.json
+      hash: md5
+      md5: ff640f5de950726e9ee1027ad09570d4
+      size: 33
+    - path: results//mistral-8x7B-0p1/mixed-0-8/rec.json
+      hash: md5
+      md5: 35fe08e0a447de7761d6221b337e3d0e
+      size: 32
+    - path: results//mistral-8x7B-0p1/mixed-0-8/rprec.json
+      hash: md5
+      md5: c8314854c81ef9656a874ce04c4375ce
+      size: 34
+    - path: results//mistral-8x7B-0p1/mixed-0-8/stratified_results.arrow
+      hash: md5
+      md5: 94235dc7c65e567eac6225e15f9fc516
+      size: 3522
+  compute_metrics@top20-models-and-prompts:
+    cmd:
+    - mkdir -p results/
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//top20-models-and-prompts/predictions_with_combined_scores.csv
+      --ordinal_ranking false --ignore_unmatched_docs FALSE --out_folder results//top20-models-and-prompts\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//top20-models-and-prompts/predictions_with_combined_scores.csv
+      hash: md5
+      md5: 745b47c6b483dd7294ca8f6e130ea23e
+      size: 2265195
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//top20-models-and-prompts/f1_opt.json
+      hash: md5
+      md5: dfab1ed2f929c4e6a8c3ebe0dd833ef0
+      size: 31
+    - path: results//top20-models-and-prompts/pr_auc.json
+      hash: md5
+      md5: 296ba3c89312cfaae517eee6d061921e
+      size: 29
+    - path: results//top20-models-and-prompts/pr_curve.csv
+      hash: md5
+      md5: c31cfec167c946f53717137db5cbb47e
+      size: 191709
+    - path: results//top20-models-and-prompts/pr_curve_plot.svg
+      hash: md5
+      md5: 4faac2da14ee542011c004cfff9871a8
+      size: 516460
+    - path: results//top20-models-and-prompts/prec_opt.json
+      hash: md5
+      md5: 9d4f470fbc9cdfe484ab4a521cffe1ad
+      size: 33
+    - path: results//top20-models-and-prompts/rec_opt.json
+      hash: md5
+      md5: 22c6b15c20e0772ae5ade8d422bb6e8f
+      size: 32
+    - path: results//top20-models-and-prompts/rprec_opt.json
+      hash: md5
+      md5: 6ed36fb9655025dc5de5dd2ed67eb718
+      size: 34
+    - path: results//top20-models-and-prompts/stratified_results.arrow
+      hash: md5
+      md5: c01ef9b2a3c5537cc19f8611198549c4
+      size: 3554
+  compute_metrics@one-model-all-prompts:
+    cmd:
+    - mkdir -p results/
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//one-model-all-prompts/predictions_with_combined_scores.csv
+      --ordinal_ranking false --ignore_unmatched_docs FALSE --out_folder results//one-model-all-prompts\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//one-model-all-prompts/predictions_with_combined_scores.csv
+      hash: md5
+      md5: 6acf784d3d1f0b0d4f14fcb7f18eddc8
+      size: 1020325
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//one-model-all-prompts/f1_opt.json
+      hash: md5
+      md5: 8b4e5a06b4581a998f402c1587fa82aa
+      size: 31
+    - path: results//one-model-all-prompts/pr_auc.json
+      hash: md5
+      md5: 0c25676eb3aaca7e39daec2d2235fc7b
+      size: 29
+    - path: results//one-model-all-prompts/pr_curve.csv
+      hash: md5
+      md5: 599462e96623a655ea0614ab179f0745
+      size: 159318
+    - path: results//one-model-all-prompts/pr_curve_plot.svg
+      hash: md5
+      md5: 016c739b6bf323c401f2fbf8fc830c2b
+      size: 425193
+    - path: results//one-model-all-prompts/prec_opt.json
+      hash: md5
+      md5: d138be20d321d7e6291fccfb67edd1b7
+      size: 33
+    - path: results//one-model-all-prompts/rec_opt.json
+      hash: md5
+      md5: 9853cea2d443f7506e8062e7f23757ed
+      size: 32
+    - path: results//one-model-all-prompts/rprec_opt.json
+      hash: md5
+      md5: b5c32bbb9735f3ff9c26204f5159a6ff
+      size: 34
+    - path: results//one-model-all-prompts/stratified_results.arrow
+      hash: md5
+      md5: 44fddd0966efb0ffe91fbffb570fa45e
+      size: 3546
+  compute_metrics@one-prompt-all-models:
+    cmd:
+    - mkdir -p results/
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//one-prompt-all-models/predictions_with_combined_scores.csv
+      --ordinal_ranking false --ignore_unmatched_docs FALSE --out_folder results//one-prompt-all-models\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//one-prompt-all-models/predictions_with_combined_scores.csv
+      hash: md5
+      md5: 5f5bedfa8fc737cf0457c8b1f361d08e
+      size: 1990762
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//one-prompt-all-models/f1_opt.json
+      hash: md5
+      md5: 9c7161a5f710086adcea81b9929696a0
+      size: 31
+    - path: results//one-prompt-all-models/pr_auc.json
+      hash: md5
+      md5: fa2a77ba1f2f9f08b1bff3e03f711b1e
+      size: 29
+    - path: results//one-prompt-all-models/pr_curve.csv
+      hash: md5
+      md5: 8ecad6768afb3a169c458af62b419647
+      size: 158709
+    - path: results//one-prompt-all-models/pr_curve_plot.svg
+      hash: md5
+      md5: 469dbf252cbc7d064ea32d0841553290
+      size: 425359
+    - path: results//one-prompt-all-models/prec_opt.json
+      hash: md5
+      md5: daa423d102b3c3368b0236b56b408c75
+      size: 33
+    - path: results//one-prompt-all-models/rec_opt.json
+      hash: md5
+      md5: 76ac67b4ccfdf272e34f5d374cbc3ddf
+      size: 32
+    - path: results//one-prompt-all-models/rprec_opt.json
+      hash: md5
+      md5: 7913d4b7b8b9c7e4d32d967d39dbbf7f
+      size: 34
+    - path: results//one-prompt-all-models/stratified_results.arrow
+      hash: md5
+      md5: 2befe3c4519fd1bfece3c790cd10da0b
+      size: 3514
+  compute_metrics@one-prompt-one-model:
+    cmd:
+    - mkdir -p results/
+    - "Rscript src/R/eval/compute_metrics.r  --ground_truth datasets/dev_sample.csv
+      --predictions  results//one-prompt-one-model/predictions_with_combined_scores.csv
+      --ordinal_ranking false --ignore_unmatched_docs FALSE --out_folder results//one-prompt-one-model\n"
+    deps:
+    - path: datasets/dev_sample.csv
+      hash: md5
+      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
+      size: 1391129
+    - path: results//one-prompt-one-model/predictions_with_combined_scores.csv
+      hash: md5
+      md5: d41e91be270c2eccba6da507e420da46
+      size: 275044
+    - path: src/R/eval/compute_metrics.r
+      hash: md5
+      md5: 1abf553ddebd869c9ea4040672510972
+      size: 7818
+    params:
+      params.yaml:
+        eval.ordinal_ranking: false
+    outs:
+    - path: results//one-prompt-one-model/f1_opt.json
+      hash: md5
+      md5: a81c38f63769558e0cd1f86d13121e79
+      size: 31
+    - path: results//one-prompt-one-model/pr_auc.json
+      hash: md5
+      md5: 54909e3994a1418fcc809a6cd5b21621
+      size: 29
+    - path: results//one-prompt-one-model/pr_curve.csv
+      hash: md5
+      md5: 2d22e50a4e1368364985f16be574257a
+      size: 38645
+    - path: results//one-prompt-one-model/pr_curve_plot.svg
+      hash: md5
+      md5: 1d417457b5e0f54976a0d4daac79884a
+      size: 109096
+    - path: results//one-prompt-one-model/prec_opt.json
+      hash: md5
+      md5: 943e6040523421624889eca4b08d87eb
+      size: 33
+    - path: results//one-prompt-one-model/rec_opt.json
+      hash: md5
+      md5: a9cd6d00d3caea8dd386f9acb5087550
+      size: 32
+    - path: results//one-prompt-one-model/rprec_opt.json
+      hash: md5
+      md5: b26c01b4c9c24c6cb1e99c3374595446
+      size: 34
+    - path: results//one-prompt-one-model/stratified_results.arrow
+      hash: md5
+      md5: ddcb42e96d4210ac1dabe53431de81f2
+      size: 3530
