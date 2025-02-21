@@ -68,8 +68,8 @@ Precision, Recall and F1 are computed as document avegrages (macro avg) and
 refer to the optimal calibartion of the system, as marked with a 
 cross on the precision-recall curves:
 
-![Precision-Recall Curves](reports/pr_curves.png)
-<img src="reports/pr_curves.png" alt="Precision-Recall Curves" width="100"/>
+
+<img src="reports/pr_curves.png" alt="Precision-Recall Curves" width="500"/>
 
 # Usage
 
