@@ -69,7 +69,7 @@ refer to the optimal calibartion of the system, as marked with a
 cross on the precision-recall curves:
 
 ![Precision-Recall Curves](reports/pr_curves.png)
-<img src="reports/pr_curves.png" alt="Precision-Recall Curves" width="400"/>
+<img src="reports/pr_curves.png" alt="Precision-Recall Curves" width="100"/>
 
 # Usage
 
