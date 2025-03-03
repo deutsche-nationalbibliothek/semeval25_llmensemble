@@ -1,3 +1,8 @@
+"""
+File name: create_vocab_collection.py
+Description: Script for stage create_vocab_collection (prepares the embeddings for map-stage).
+"""
+
 import argparse
 from tqdm import tqdm
 import pandas as pd
