@@ -1,3 +1,7 @@
+"""
+File name: preprocess.py
+Description: This script prepares the dataset and is called part of the pipeline."""
+
 import os
 import json
 import pandas as pd
