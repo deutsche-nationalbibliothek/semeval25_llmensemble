@@ -1,3 +1,8 @@
+""""
+File name: generate_embeddings.py
+Description: Script for the generation of embedding, is called by create_vocab_collection.py
+"""
+
 import pandas as pd
 import torch
 from tqdm import tqdm
