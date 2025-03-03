@@ -1,3 +1,8 @@
+"""
+File name: completion.py
+Description: Script to complete the complete-stage of our pipeline.
+"""
+
 import json
 import datetime
 import logging
