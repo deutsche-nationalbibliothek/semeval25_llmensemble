@@ -1,3 +1,7 @@
+"""
+File name: rank.py
+Description: Implementation of rank-stage
+"""
 import yaml
 from argparse import ArgumentParser
 import pandas as pd
@@ -50,9 +54,7 @@ class Ranker:
         self.output_file = output_file
 
         self.global_samplingparams = self.dvc_params["vllm"]["global_samplingparams"]
-        # ranking parameters
         self.score_param = self.p_ranking.get("score_param", "relevance")
-        
         self.ranking_model = self.p_ranking.get("model", "meta-llama/Meta-Llama-3.1-8B-Instruct")           
         self.temperature = self.p_ranking.get("temperature",0)
         self.max_suggestions = self.p_ranking.get("max_suggestions", 10)    
@@ -159,6 +161,7 @@ class Ranker:
         del self.predictions
 
     def rank_batches(self, preds_for_ranking):
+        """Rankes the predictions in batches."""
         results = []
         for doc_id, row in tqdm(preds_for_ranking.iterrows(), total=len(preds_for_ranking), desc="Reranking suggestions"):
             text = row["text"]
@@ -193,7 +196,6 @@ class Ranker:
                 print("Hallucinated keywords: ", [kw for kw, r in ranked_kw if kw not in labels])
                 print("Original keywords: ", labels)
                 print("Ranking output: ", ranked_kw)
-            # raise ValueError("More ranked keywords than possible")
             ranked_kw = [(kw,r) for kw,r in ranked_kw if kw in labels] 
             
 
