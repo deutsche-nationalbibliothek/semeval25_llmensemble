@@ -1,3 +1,8 @@
+"""
+File name: mapping.py
+Description: Responsible for the map-stage of our pipeline.
+"""
+
 import json
 import numpy as np
 import pandas as pd
@@ -18,9 +23,6 @@ from weaviate.classes.query import MetadataQuery
 import weaviate
 
 from dvc.api import params_show
-
-# TODO: can Mapping class be removed and the methods simply be moved to LLMMapping?
-# or does this produce issues because of the multiprocessing?
 
 class Mapping:
     def __init__(self, hyperparameters: dict, collection_name: str,phrase: str, debug: bool, db_connection: weaviate.client.Client):
@@ -50,8 +52,6 @@ class Mapping:
             try:
                 # comment_mk: if you configure the collection with vectorizer, you can omit the embedding step here
                 embedding = list(np.array(requests.post('http://127.0.0.1:{}/embed'.format(self.host), headers={"Content-Type": "application/json"}, json={'inputs': query}).json()).reshape(-1))
-                # if self.debug:
-                #     print("Embedding: ", embedding)
                 if self.search == "vector":
                     # comment_mk: if we add another LLM stage that ranks and checks outputs for plausibility, we can set the limit higher
                     #   to include other "close matches" 
@@ -92,8 +92,6 @@ class Mapping:
 
         if success == False:
             print("Failed mapping with candidate: ", candidate)
-        # self.weaviate_client.close()
-        # print(result)
         if self.debug:
             print("Query: ", query)
             print("Success: ", success)
@@ -132,8 +130,6 @@ class LLMMapping:
         self.id_mapping_table = id_mapping_table
         self.mapping_stats = mapping_stats
         self.allowed_subjects = allowed_subjects
-        # path = os.path.dirname(self.output_file)
-        # self.output_file_eval = os.path.join(path, self.p_mapping.get("output_file_eval", "predictions.arrow"))
 
         self.n_processes = self.p_mapping.get("n_processes", 20)
         self.phrase = self.p_mapping.get("phrase", None)
@@ -161,20 +157,17 @@ class LLMMapping:
         )
         for b_item in batch:
             results.append(self.map_candidate(b_item, weaviate_client))
-        # print("results (type: {})".format(type(results)), results)
-        # print("as list", list(results))
+        
         weaviate_client.close()
         return results
 
     def map_candidate(self, candidate, db_connection):
-        # candidate = row[1].candidate
         mapping = Mapping(
             hyperparameters=self.hyperparameters,
             collection_name=self.collection_name,
             phrase=self.phrase,
             debug=self.debug,
             db_connection=db_connection
-            # host=self.host
         )
 
         result = mapping.query_vector_database(candidate=candidate)
