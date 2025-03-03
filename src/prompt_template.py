@@ -1,4 +1,7 @@
-# Goal: transform few-shot examples to correct prompt template, depending on the LLM
+"""
+File name: prompt_template.py
+Description: Module to build few-shot prompts for LLMs by reading the prompt files and applying a template to them.
+"""
 import json
 import pandas as pd
 from ast import literal_eval
