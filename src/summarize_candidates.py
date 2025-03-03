@@ -1,13 +1,15 @@
+"""
+File name: summarize_candidates.py
+Description: Run the summarize-stage of our pipeline, which combines the results of the modelxprompt
+"""
 from argparse import ArgumentParser
 import logging
 import pandas as pd
-from dvc.api import params_show
 
 def execute():
     parser = ArgumentParser()
     parser.add_argument("input_files", help="Input files", type=str, nargs='+')
     parser.add_argument("--output_file", help="Output Filename/Path", type=str, required=True)
-    # parser.add_argument("--output_file_eval", help="Output Filename/Path .arrow", type=str, required=True)
     args = parser.parse_args()
     n_files = len(args.input_files)
     print("Input files:", args.input_files)
