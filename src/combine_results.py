@@ -162,3 +162,33 @@ def execute():
 
 if __name__=="__main__":
     execute()
+
+# example usage:
+# models = [
+    # "llama-32-3B", 
+    # "mistral-7B", 
+    # "mistral-8x7B-0p1"
+    # ]
+# prompts = [
+    # "highlemma-fewlabels",
+    # "highlemma-manylabels",
+    # "lowlemma-fewlabels",
+    # "lowlemma-manylabels", 
+    # "english-0-8",
+    # "english-1-8",
+    # "english-2-12"
+    # ]
+
+# for i in range(10, 105, 10):
+#     out_dir = "results/best_combinations/" + str(i) + "/"	
+#     os.makedirs(out_dir, exist_ok=True)
+#     pr_auc = combine_results(
+#     "/results",
+#     models,
+#     prompts,
+#     i,
+#     "predictions.csv",
+#     out_dir,
+#     "datasets/dev_sample.csv",
+#     sample=100
+# )
