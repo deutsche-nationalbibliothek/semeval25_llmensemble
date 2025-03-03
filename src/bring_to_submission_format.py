@@ -1,3 +1,8 @@
+"""
+File name: bring_to_submission_format.py
+Description: Script needed to convert output of the pipeline to the submission format for the LLMs4Subjects-shared task.
+"""
+
 import pandas as pd
 import json
 import os
