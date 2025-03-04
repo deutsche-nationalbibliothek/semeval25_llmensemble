@@ -1,4 +1,7 @@
 #!/usr/bin/env Rscript
+# File name: compute_metrics.r
+# Description: Computes metrics for results of individual models and ensembles
+
 library("optparse")
 
 option_list <- list(

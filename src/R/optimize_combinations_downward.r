@@ -1,3 +1,7 @@
+# File name: optimize_combinations_downward.r
+# Description: Find optimal combinations from a set of combinations 
+# by removing the one causing the least performance loss
+
 library(tidyverse)
 library(dplyr)
 library(arrow)

@@ -1,3 +1,7 @@
+# File name: optimize_combinations.r
+# Description: Find optimal combination from a big list of combinations
+# by iteratively adding the one with most performance gain
+
 library(tidyverse)
 library(arrow)
 library(aeneval)
