@@ -12,16 +12,16 @@ library(aeneval)
 # result_files <- list.files(
 #   "results/", 
 #   recursive = TRUE, 
-#   pattern = ".*predictions.arrow$",
+#   pattern = ".*predictions.csv$",
 #   full.names = TRUE)
 
-# result_files <- setdiff(result_files, c("results//predictions.arrow", "results//ranked_predictions.arrow" ))
+# result_files <- setdiff(result_files, c("results//predictions.csv", "results//ranked_predictions.csv" ))
 
 top60 <- read_csv("results/top60_combi.csv")
 
-result_files <- paste0("results/", top60$model, "/", top60$prompt, "/predictions.arrow")
+result_files <- paste0("results/", top60$model, "/", top60$prompt, "/predictions.csv")
 
-names <- str_extract(result_files, pattern = "^results/+(.*)/predictions.arrow$", group = 1)  |>
+names <- str_extract(result_files, pattern = "^results/+(.*)/predictions.csv$", group = 1)  |>
   str_replace("/", "_") 
 
 result_files <- setNames(result_files, names)

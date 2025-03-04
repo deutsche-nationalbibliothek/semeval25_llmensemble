@@ -14,7 +14,7 @@ result_files <- list.files(
   pattern = ".*predictions.csv$",
   full.names = TRUE)
 
-result_files <- setdiff(result_files, c("results//predictions.arrow", "results//ranked_predictions.arrow" ))
+result_files <- setdiff(result_files, c("results//predictions.csv", "results//ranked_predictions.csv" ))
 
 names <- str_extract(result_files, pattern = "^results//(.*)/predictions.arrow$", group = 1)  |>
   str_replace("/", "_") 
