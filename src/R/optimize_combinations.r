@@ -22,7 +22,7 @@ names <- str_extract(result_files, pattern = "^results//(.*)/predictions.arrow$"
 result_files <- setNames(result_files, names)
 
 gold_standard <- read_csv(
-  file = "datasets/all-subjects-tib-core-subjects-Article-Book-Conference-Report-Thesis-en-de-dev_sample1000.csv",
+  file = "datasets/dev_opt.csv",
   col_select = c("idn", "dcterms:subject", "language", "text_type"),
   col_types = "cccc"
 ) |>

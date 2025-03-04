@@ -8,7 +8,7 @@ option_list <- list(
   make_option(
     c("--ground_truth"),
     type = "character",
-    default = "datasets/all-subjects-tib-core-subjects-Article-Book-Conference-Report-Thesis-en-de-dev_sample1000.csv",
+    default = "datasets/dev_opt.csv",
     help = "path to the ground truth file",
     metavar = "character"
   ),

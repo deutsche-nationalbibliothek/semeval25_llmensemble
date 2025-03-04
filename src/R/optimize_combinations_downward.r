@@ -18,6 +18,7 @@ library(aeneval)
 # result_files <- setdiff(result_files, c("results//predictions.csv", "results//ranked_predictions.csv" ))
 
 top60 <- read_csv("results/top60_combi.csv")
+# you can get the top60_combi.csv or an equivalent ensemble by running combine_results.py
 
 result_files <- paste0("results/", top60$model, "/", top60$prompt, "/predictions.csv")
 
@@ -29,7 +30,7 @@ result_files <- setNames(result_files, names)
 #result_files <- result_files[1:10]
 
 gold_standard <- read_csv(
-  file = "datasets/all-subjects-tib-core-subjects-Article-Book-Conference-Report-Thesis-en-de-dev_sample1000.csv",
+  file = "datasets/dev_opt.csv",
   col_select = c("idn", "dcterms:subject", "language", "text_type"),
   col_types = "cccc"
 ) |>
