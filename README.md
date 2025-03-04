@@ -76,6 +76,17 @@ cross on the precision-recall curves:
 
 # Usage
 
+## Dataset recreation
+To optimize and test our system, we used two sampled splits of the dev-set of ~1000 items, dev-opt and dev-test.
+This is how you can re-create them (run from ):
+```bash
+python src/preprocess.py -d llms4subjects/shared-task-datasets/TIBKAT/ -s dev -t Article-Book-Conference-Report-Thesis -l en de -u all-subjects-tib-core-subjects -o datasets/dev-test.csv --include_docs assets/dev-test_idns.csv 
+```
+```sh
+python src/preprocess.py -d llms4subjects/shared-task-datasets/TIBKAT/ -s dev -t Article-Book-Conference-Report-Thesis -l en de -u all-subjects-tib-core-subjects -o datasets/dev-opt.csv --include_docs assets/dev-opt_idns.csv 
+```
+
+
 ## Huggingface-Configuration
 
 Some of the LLMs used in this repository have **gated access only**. You need to request access to these models
