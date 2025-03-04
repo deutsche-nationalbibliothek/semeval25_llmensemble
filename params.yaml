@@ -76,7 +76,7 @@ completion:
   prompt_template_info: assets/templates/model_to_template.json
   prompt_template_dir: assets/templates/
   custom_instruction: assets/instructions/instruction01.txt
-  text: both # abstract, title, both
+  text: both # options: abstract, title, both
   vllm:
     samplingparams:
       max_new_tokens: 100
@@ -97,7 +97,7 @@ mapping:
 
 ranking:
   model: meta-llama/Meta-Llama-3.1-8B-Instruct
-  score_param: relevance # choice: relevance, count, score
+  score_param: relevance # choice: relevance, score, cosine_similarity, hybrid_score
   temperature: 0
   instruction: assets/instructions/ranking_instruction03.json
   max_suggestions: 50
