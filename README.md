@@ -1,11 +1,14 @@
 # DNB-AI-Project at SemEval-2025 Task 5: An LLM-Ensemble Approach for Automated Subject Indexing
 
-This repository is our implementation for the SemEval'25 Task 5 - LLMs4Subjects. Here is the webpage of the task:
+This repository is our implementation for the SemEval-202525 Task 5 - LLMs4Subjects. Here is the webpage of the task:
 https://sites.google.com/view/llms4subjects/home?authuser=0
 
 The main idea of our system is to leverage a range of few-shot prompts and LLMs and ensemble the results, no fine-tuning required. We hande the vocabulary by mapping the LLM's keywords onto it using embeddings.
-Important libraries for our system are [DVC](https://dvc.org/doc) and [vLLM](https://docs.vllm.ai/en/latest/). Our system also connects to a local [Weaviate](https://weaviate.io/) vector stroage as well as a local Text Embedding Service through Huggingface TEI. You will need to set these up, before you can run the code. 
+We rank fourth on the quantitative evaluation board and first on the qualitative evaluation board.
+
+Important libraries for our system are [DVC](https://dvc.org/doc) and [vLLM](https://docs.vllm.ai/en/latest/). Our system also connects to a local [Weaviate](https://weaviate.io/) vector storage as well as a local Text Embedding Service through Huggingface TEI. You will need to set these up, before you can run the code. 
 Our work results from a [project](https://www.dnb.de/EN/Professionell/ProjekteKooperationen/Projekte/KI/ki_node.html) at the German National Library (DNB), aiming at finding and testing methods for the task of subject indexing digital publications in the German language.
+
 
 
 # Instructions
@@ -22,11 +25,11 @@ Please find our full system description in our submitted paper: [TBA]
 
 The subject tagging system mainly consists of five stages:
 
-  * `complete`: Generate free keywords with an LLM
+  * `complete`: Generate free keywords with different LLM x prompt combinations
   * `map`: Map keywords to the target vocab
-  * `summarize`: aggregate suggestions from all ensemble component models
-  * `rank`: use LLM to generate relevance scores for all suggestions
-  * `combine`: compute final ranking score from LLM-rating (`rank`) and ensemble vote (`summarize`)
+  * `summarize`: Aggregate suggestions from individual model x prompt experiments to an ensemble
+  * `rank`: Use an LLM to generate relevance scores for all suggestions
+  * `combine`: Compute final ranking score from LLM-rating (`rank`) and ensemble vote (`summarize`)
 
 The stages `complete` and `map` are executed for all models and prompts
 specified in the params.yaml
@@ -55,7 +58,7 @@ flowchart TD
 
 # Results
 
-On a dev-sample of 1000 documents that was not used in fine-tuning our system we can report the following results
+On a dev-sample of 1000 documents that was not used in optimizing our set-up (See documents in `assets/dev-test_idns.csv`), we can report the following results:
 
 |Ensemble Strategy     | Precision| Recall|    F1| PR-AUC|
 |:---------------------|---------:|------:|-----:|------:|
@@ -64,8 +67,8 @@ On a dev-sample of 1000 documents that was not used in fine-tuning our system we
 |one-prompt-all-models |     0.492|  0.414| 0.407|  0.375|
 |one-model-one-prompt  |     0.461|  0.385| 0.380|  0.235|
 
-Precision, Recall and F1 are computed as document avegrages (macro avg) and 
-refer to the optimal calibartion of the system, as marked with a 
+Precision, Recall and F1 are computed as document averages (macro-avg) and 
+refer to the optimal calibration of the system, as marked with a 
 cross on the precision-recall curves:
 
 
@@ -86,18 +89,18 @@ Also you may want to specify the download directory, where HuggingFace models
 are stored on your workstation, which can 
 be configured in the `params.yaml` section `general.vllm_engineargs.download_dir`
 
-In the same section `general.vllm_engineargs` you find other settings for the
+In the same section `general.vllm_engineargs`, you find other settings for the
 execution of vLLM. In particular, set `tensor_parallel_size` to the number
 of available GPU-devices.
 
 **Note:** Make sure you have enough GPU memory to run all the models specified
-  in the params.yaml file. 
+  in the `params.yaml`` file. 
 
 ## Weaviate and Text embedding service
 
 The stage that maps keyword suggestions to the target vocabulary employs
-a vector search across the vocabulary. To facilitate fast HNSW-Search
-we store the vocabularies text embeddings in a [Weaviate](https://weaviate.io/) 
+a vector search across the vocabulary. To facilitate fast HNSW-Search,
+we store the vocabulary's text embeddings in a [Weaviate](https://weaviate.io/) 
 vector storage, that you will need to set up locally. 
 Also, this process needs to generate text embeddings. For this purpose 
 we start a [HuggingFace Text-Embedding-Inference Service](https://github.com/huggingface/text-embeddings-inference) (TEI). You can launch weaviate as well as the TEI using docker compose and the provided `docker-compose.yaml` file.
@@ -120,7 +123,7 @@ Two files are crucial for using our code to perform subject tagging
     * This file contains the stages, i.e. the steps to run in your experiments. For each step, you can specify which `cmd` it calls, the parameters, dependencies and output files (which can be tracked with DVC, too). Unless you want to change our procedure or change some of the hard-coded files, it doesn't need to be changed.
     * For most stages, you can find a corresponding `.py` or `.r` script that you can also run independently of the DVC pipeline.
 * `params.yaml`
-    * This file contains all the parameters, like prompt specifications, LLMs to prompt and more. You can adapt the parameters in this file and reproduce the pipeline (see next subsection) or them temporarily for experiments (see subsection after next)
+    * This file contains all the parameters, like prompt specifications, LLMs, prompts and more. You can adapt the parameters in this file and reproduce the pipeline (see next subsection) or change them temporarily for experiments (see subsection after next).
 
 ### Reproducing the pipeline
 
