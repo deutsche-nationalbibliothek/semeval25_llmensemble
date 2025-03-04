@@ -123,9 +123,7 @@ stages:
   #   - src/summarize_candidates.py
   #   outs:
   #   - ${general.write_directory}/${mapping.output_file}
-  #   # - ${general.write_directory}/${mapping.output_file_eval}
 
-  # Note_mk: better collect completions after mapping, so that similar suggestions are not counted as different entities
   summarize_completions_top20-models-and-prompts:
     desc: Summarize mapped completions from individual models to one file
     always_changed: false 
