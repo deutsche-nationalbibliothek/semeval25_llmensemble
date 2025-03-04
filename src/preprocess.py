@@ -29,6 +29,7 @@ class DatasetCreator:
         sample_size,
         seed,
         forbidden_list=[],
+        include_list=[],
     ):
         """Initialization.
 
@@ -40,7 +41,8 @@ class DatasetCreator:
             languages (list): Languages to consider (en, de)
             sample_size (int): Draw a subsample of size n from the dataset
             seed (int): Seed for the random sample
-            forbidden_list (int) (Optional): List of forbidden doc_ids (that e.g. have been used in previous experiments)
+            forbidden_list (list) (Optional): List of forbidden doc_ids (that e.g. have been used in previous experiments)
+            include_list (list) (Optional): List of doc_ids to include in the dataset (e.g. to re-create dev-test or dev-opt)
         """
 
         self.path = data_path  # point to llms4subjects/shared-task-datasets/TIBKAT
@@ -68,6 +70,7 @@ class DatasetCreator:
                 )
         self.subjects = subjects
         self.forbidden_list = forbidden_list
+        self.include_list = include_list
         self.data = self.get_data()
 
     def get_data(self):
@@ -172,10 +175,22 @@ class DatasetCreator:
         df = df.drop_duplicates(subset=["doc_id"])
 
         old_size = df.shape[0]
+
         if len(self.forbidden_list) > 0:
             df = df[~df["doc_id"].isin(self.forbidden_list)]
             new_size = df.shape[0]
             print("Removed {} documents from the dataset.".format(old_size - new_size))
+
+        if len(self.include_list) > 0:
+            if self.sample_size is not None:
+                print(
+                    "Cannot use an include_list and sample at the same time. Exiting."
+                )
+                return
+            else:
+                df = df[df["doc_id"].isin(self.include_list)]
+                new_size = df.shape[0]
+                print("Included {} documents in the dataset.".format(new_size))
 
         if self.sample_size is not None:
             if self.sample_size > df.shape[0]:
@@ -259,6 +274,12 @@ def run():
         default=None,
         required=False,
     )
+    parser.add_argument(
+        "--include_docs",
+        help="Build a dataset with the documents in the include_docs dataset",
+        default=None,
+        required=False,
+    )
 
     args = parser.parse_args()
 
@@ -285,11 +306,19 @@ def run():
         forbidden_docs_ds = pd.read_csv(args.forbidden_docs)
         # forbidden_list = forbidden_docs_ds.doc_id.tolist()
         forbidden_list = forbidden_docs_ds.idn.tolist()
+        print("Using a forbidden_list of length {}.".format(len(forbidden_list)))
     except (FileNotFoundError, ValueError):
         print(
             "Not using a forbidden list (because the file was not found or the use was not requested)."
         )
         forbidden_list = []
+
+    try:
+        include_docs_ds = pd.read_csv(args.include_docs)
+        include_list = include_docs_ds.idn.tolist()
+        print("Using an include_list of length {}.".format(len(include_list)))
+    except (FileNotFoundError, ValueError):
+        include_list = []
 
     ds = DatasetCreator(
         data_path=args.data_path,
@@ -300,6 +329,7 @@ def run():
         sample_size=args.sample_size,
         seed=args.seed,
         forbidden_list=forbidden_list,
+        include_list=include_list,
     )
 
     if args.output_file is not None:
