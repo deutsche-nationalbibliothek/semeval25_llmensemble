@@ -91,8 +91,8 @@ mapping:
   # the output will contain a column "score" which is either the cosine similarity or the hybrid score
   score_param: hybrid_score # choice: cosine_similarity, hybrid_score
   hyperparameters:
-    search: hybrid        # "hybrid"
-    min_cosine_similarity: 0.7 # theshold for vector search
+    search: hybrid        # options: hybrid, vector
+    min_cosine_similarity: 0.7 # threshold for vector search
     alpha: 0.7       # 0 - 1
 
 ranking:

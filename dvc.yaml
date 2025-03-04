@@ -27,6 +27,7 @@ stages:
 
   create_vocab_collection:
     frozen: true
+    desc: Create a Weaviate collection with the embeddings for the mapping stage.
     cmd: 
       - > 
         python src/create_vocab_collection.py \
@@ -52,7 +53,7 @@ stages:
     matrix:
       model: ${language_models}
       prompt: ${completion.prompt_specification_files}
-    desc: Generate freeterms with LLM 
+    desc: Run the complete-stage, generate free keywords with a matrix of modelxprompt combinations
     cmd:
     - mkdir -p ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}
     - > 
@@ -84,7 +85,7 @@ stages:
     matrix:
       model: ${language_models}
       prompt: ${completion.prompt_specification_files}
-    desc: Map freeterms to GND
+    desc: Run the map-stage, map keywords to GND subject terms
     cmd:
     - > 
       python src/mapping.py \
@@ -110,7 +111,7 @@ stages:
         cache: false
 
   # summarize_completions:
-  #   desc: Summarize mapped completions from individual models to one file
+  #   desc: Run summarize-stage, summarize mapped subject terms from individual modelxprompt combinations to one file
   #   always_changed: true # this makes the specification of deps irrelevant
   #   cmd:
   #   - > 
@@ -125,7 +126,7 @@ stages:
   #   - ${general.write_directory}/${mapping.output_file}
 
   summarize_completions_top20-models-and-prompts:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for top20-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/top20-models-and-prompts
@@ -180,7 +181,7 @@ stages:
     - ${general.write_directory}/top20-models-and-prompts/${mapping.output_file}
 
   summarize_completions_one-model-all-prompts:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for one-model-all-prompts-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/one-model-all-prompts
@@ -215,7 +216,7 @@ stages:
     - ${general.write_directory}/one-model-all-prompts/${mapping.output_file}
 
   summarize_completions_one-prompt-all-models:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for one-prompt-all-models-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/one-prompt-all-models
@@ -244,7 +245,7 @@ stages:
     - ${general.write_directory}/one-prompt-all-models/${mapping.output_file}
 
   summarize_completions_one-prompt-one-model:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for one-prompt-one-model-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/one-prompt-one-model
@@ -267,7 +268,7 @@ stages:
       - one-prompt-all-models
       - one-prompt-one-model
     do:
-      desc: Rank (and filter) suggestions
+      desc: Run rank-stage for all ensembles
       cmd:
       - > 
         python src/rank.py \
@@ -304,7 +305,7 @@ stages:
       one-prompt-one-model:
         weight: 0.3
     do:
-      desc: Combine scores from different stages
+      desc: Run combine-stage for all ensembles to produce final results
       cmd: 
         - >
           python src/combine_scores.py \
