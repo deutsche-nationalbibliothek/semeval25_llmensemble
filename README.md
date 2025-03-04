@@ -9,17 +9,13 @@ We rank fourth on the quantitative evaluation board and first on the qualitative
 Important libraries for our system are [DVC](https://dvc.org/doc) and [vLLM](https://docs.vllm.ai/en/latest/). Our system also connects to a local [Weaviate](https://weaviate.io/) vector storage as well as a local Text Embedding Service through Huggingface TEI. You will need to set these up, before you can run the code. 
 Our work results from a [project](https://www.dnb.de/EN/Professionell/ProjekteKooperationen/Projekte/KI/ki_node.html) at the German National Library (DNB), aiming at finding and testing methods for the task of subject indexing digital publications in the German language.
 
+## Table of Contents
+- [System Description](#system-description)
+- [Instructions](#instructions)
+- [Usage](#usage)
 
-
-# Instructions
-
-1. Clone this repository.
-2. Get the data from llms4subjects: `git submodule update --init`
-3. Setup local Text Embedding Service with [Huggingface TEI](https://huggingface.co/docs/text-embeddings-inference/index) and Setup a local Weaviate vector storage (see instructions with docker-compose below)
-5. Install the requirements from `requirements.txt`
-6. Reproduce the pipeline `dvc repro`
-
-# System-Sketch
+# System Description
+## System Sketch
 
 Please find our full system description in our submitted paper: [TBA]
 
@@ -56,7 +52,7 @@ flowchart TD
 	node11-->node10
 ```
 
-# Results
+## Results
 
 On a dev-sample of 1000 documents that was not used in optimizing our set-up (See documents in `assets/dev-test_idns.csv`), we can report the following results:
 
@@ -73,6 +69,14 @@ cross on the precision-recall curves:
 
 
 <img src="reports/pr_curves.png" alt="Precision-Recall Curves" width="400"/>
+
+# Instructions
+
+1. Clone this repository.
+2. Get the data from llms4subjects: `git submodule update --init`
+3. Setup local Text Embedding Service with [Huggingface TEI](https://huggingface.co/docs/text-embeddings-inference/index) and Setup a local Weaviate vector storage (see instructions with docker-compose below)
+5. Install the requirements from `requirements.txt`
+6. Reproduce the pipeline `dvc repro`
 
 # Usage
 
@@ -157,7 +161,7 @@ dvc exp run
 See the [documentation]{https://dvc.org/doc/command-reference/exp/run#exp-run} for how to run the experiments in a queue, name the experiment and modify the parameters.
 
 
-# Evaluation
+## Evaluation
 
 Metrics are computed in a seperate dvc-pipeline contained in the subfolder `eval-pipeline`. 
 Currently, these are only reproducible with our internal tools, but we hope to share 
