@@ -2,10 +2,10 @@ schema: '2.0'
 stages:
   create_dataset:
     cmd:
-    - "python src/preprocess.py \\\n  --data_path llms4subjects/shared-task-datasets/TIBKAT/
-      \\\n  --data_splits dev \\\n  --text_types Article-Book-Conference-Report-Thesis
-      \\\n  --languages de-en \\\n  --subjects all-subjects \\\n  --output_file datasets/dev_sample.csv
-      \\\n  --sample_size 1000 \\\n  --seed 42\\\n  --forbidden_docs assets/deny_list_dev_sample.csv\n"
+    - "python src/preprocess.py \\\n  --data_path ../llms4subjects/shared-task-datasets/TIBKAT/
+      \\\n  --data_splits dev \\ \n  --text_types Article-Book-Conference-Report-Thesis
+      \\\n  --languages de-en \\\n  --subjects all-subjects \\\n  --output_file datasets/dev_sample_small.csv
+      \\\n  --sample_size 50 \\\n  --seed 42 \\\n  --forbidden_docs assets/deny_list_dev_sample.csv\n"
     deps:
     - path: assets/deny_list_dev_sample.csv
       hash: md5
@@ -13,8 +13,8 @@ stages:
       size: 12647
     - path: src/preprocess.py
       hash: md5
-      md5: 7ad5f3eba94a042b049facc52eebdbad
-      size: 11578
+      md5: 37beb9e2b2fb5b56f6106756f5bd1b80
+      size: 14130
     params:
       params.yaml:
         general.languages: de-en
@@ -22,10 +22,10 @@ stages:
         general.subjects: all-subjects
         general.text_types: Article-Book-Conference-Report-Thesis
     outs:
-    - path: datasets/dev_sample.csv
+    - path: datasets/dev_sample_small.csv
       hash: md5
-      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
-      size: 1391129
+      md5: 6ac26514809818ba0cc8e903d1a41005
+      size: 58134
   create_vocab_collection:
     cmd:
     - "python src/create_vocab_collection.py \\\n  --ttl_file vocab/GND-Subjects-plus.ttl
@@ -34,12 +34,12 @@ stages:
     deps:
     - path: src/create_vocab_collection.py
       hash: md5
-      md5: 63fdf7ea8bce9f9e7dcdfb9f73354cc5
-      size: 7034
+      md5: 452928bb6e4e6d181823775bdf392c43
+      size: 7558
     - path: src/generate_embeddings.py
       hash: md5
-      md5: 9db51bfe2bb2190585bbf5f3b3bd70b0
-      size: 1541
+      md5: 7057058203b26e8ce479df58d3f28f77
+      size: 1710
     - path: vocab/GND-Subjects-plus.ttl
       hash: md5
       md5: 9685c606612ed82469c466b3328a1f4d
@@ -59,21 +59,21 @@ stages:
     cmd:
     - mkdir -p results//llama-32-3B/alltypes-de-abstitle-8-0
     - "python src/completion.py \\\n  --hf_model_name meta-llama/Llama-3.2-3B-Instruct
-      \\\n  --dataset_file datasets/dev_sample.csv \\\n  --completion_file results//llama-32-3B/alltypes-de-abstitle-8-0/completions.csv
+      \\\n  --dataset_file datasets/dev_sample_small.csv \\\n  --completion_file results//llama-32-3B/alltypes-de-abstitle-8-0/completions.csv
       \\\n  --prompt_specification assets/prompts/german/alltypes_de_abstitle_8_0.txt\n"
     deps:
     - path: assets/prompts/german/alltypes_de_abstitle_8_0.txt
       hash: md5
       md5: bdd7e594141807e293d7f8540026480a
       size: 12832
-    - path: datasets/dev_sample.csv
+    - path: datasets/dev_sample_small.csv
       hash: md5
-      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
-      size: 1391129
+      md5: 6ac26514809818ba0cc8e903d1a41005
+      size: 58134
     - path: src/completion.py
       hash: md5
-      md5: 3023b0ca09e1c0d51b9ef6f24176213b
-      size: 11338
+      md5: efc012ec4bd6a70c5ead2c4f2e681b8c
+      size: 11806
     params:
       params.yaml:
         completion.custom_instruction: assets/instructions/instruction01.txt
@@ -90,27 +90,27 @@ stages:
     outs:
     - path: results//llama-32-3B/alltypes-de-abstitle-8-0/completions.csv
       hash: md5
-      md5: 9facda384c647d04ae067af0d2b89c94
-      size: 159699
+      md5: c51c396e8cd83fb7400899b5d61fd765
+      size: 7710
   complete@model1-prompt0:
     cmd:
     - mkdir -p results//mistral-7B/alltypes-de-abstitle-8-0
     - "python src/completion.py \\\n  --hf_model_name mistralai/Mistral-7B-v0.1 \\\
-      \n  --dataset_file datasets/dev_sample.csv \\\n  --completion_file results//mistral-7B/alltypes-de-abstitle-8-0/completions.csv
+      \n  --dataset_file datasets/dev_sample_small.csv \\\n  --completion_file results//mistral-7B/alltypes-de-abstitle-8-0/completions.csv
       \\\n  --prompt_specification assets/prompts/german/alltypes_de_abstitle_8_0.txt\n"
     deps:
     - path: assets/prompts/german/alltypes_de_abstitle_8_0.txt
       hash: md5
       md5: bdd7e594141807e293d7f8540026480a
       size: 12832
-    - path: datasets/dev_sample.csv
+    - path: datasets/dev_sample_small.csv
       hash: md5
-      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
-      size: 1391129
+      md5: 6ac26514809818ba0cc8e903d1a41005
+      size: 58134
     - path: src/completion.py
       hash: md5
-      md5: 3023b0ca09e1c0d51b9ef6f24176213b
-      size: 11338
+      md5: efc012ec4bd6a70c5ead2c4f2e681b8c
+      size: 11806
     params:
       params.yaml:
         completion.custom_instruction: assets/instructions/instruction01.txt
@@ -127,8 +127,8 @@ stages:
     outs:
     - path: results//mistral-7B/alltypes-de-abstitle-8-0/completions.csv
       hash: md5
-      md5: 345b84aa1cf6fb0a8d67216b2e11348b
-      size: 126472
+      md5: 6f7fb318d79987af1767b5bd3eda4e11
+      size: 6125
   map@model0-prompt0:
     cmd:
     - "python src/mapping.py \\\n  --completion_file results//llama-32-3B/alltypes-de-abstitle-8-0/completions.csv
@@ -138,12 +138,12 @@ stages:
     deps:
     - path: results//llama-32-3B/alltypes-de-abstitle-8-0/completions.csv
       hash: md5
-      md5: 9facda384c647d04ae067af0d2b89c94
-      size: 159699
+      md5: c51c396e8cd83fb7400899b5d61fd765
+      size: 7710
     - path: src/mapping.py
       hash: md5
-      md5: 86f64c8ad4f52e5e270f5cac97dfaaeb
-      size: 14176
+      md5: 4209acdcce1a5c727eaeae44b9b112e0
+      size: 14498
     - path: vocab/collection_copy.arrow
       hash: md5
       md5: 4f1ca8dec635885264b24f302384d9b5
@@ -161,16 +161,16 @@ stages:
     outs:
     - path: results//llama-32-3B/alltypes-de-abstitle-8-0/mapping_stats.json
       hash: md5
-      md5: 6964c07513f513dbfeba995da4e76f98
-      size: 87
+      md5: 34051efdeff7945dfd2313ac06a161e7
+      size: 84
     - path: results//llama-32-3B/alltypes-de-abstitle-8-0/predictions.csv
       hash: md5
-      md5: a7189607391ded7f854c5daced42d19b
-      size: 472317
+      md5: 031465b043053e9572f1c8f87b5b3830
+      size: 22510
     - path: results//llama-32-3B/alltypes-de-abstitle-8-0/removed_predictions.csv
       hash: md5
-      md5: 54cada69e44af7eee2ef14bfb19b453a
-      size: 7214
+      md5: 364897d4e551a50c8be9947508477e02
+      size: 460
   map@model1-prompt0:
     cmd:
     - "python src/mapping.py \\\n  --completion_file results//mistral-7B/alltypes-de-abstitle-8-0/completions.csv
@@ -180,12 +180,12 @@ stages:
     deps:
     - path: results//mistral-7B/alltypes-de-abstitle-8-0/completions.csv
       hash: md5
-      md5: 345b84aa1cf6fb0a8d67216b2e11348b
-      size: 126472
+      md5: 6f7fb318d79987af1767b5bd3eda4e11
+      size: 6125
     - path: src/mapping.py
       hash: md5
-      md5: 86f64c8ad4f52e5e270f5cac97dfaaeb
-      size: 14176
+      md5: 4209acdcce1a5c727eaeae44b9b112e0
+      size: 14498
     - path: vocab/collection_copy.arrow
       hash: md5
       md5: 4f1ca8dec635885264b24f302384d9b5
@@ -203,31 +203,32 @@ stages:
     outs:
     - path: results//mistral-7B/alltypes-de-abstitle-8-0/mapping_stats.json
       hash: md5
-      md5: 00139ff029932d6cd892ce107714686b
-      size: 88
+      md5: 69d4d5faa1d4debd522298ce0aadaf43
+      size: 84
     - path: results//mistral-7B/alltypes-de-abstitle-8-0/predictions.csv
       hash: md5
-      md5: a4caaa45189c2a50d58d047c81f214f6
-      size: 325203
+      md5: 72a37d2beb91c785d949a84a23030a02
+      size: 16459
     - path: results//mistral-7B/alltypes-de-abstitle-8-0/removed_predictions.csv
       hash: md5
-      md5: 35dbf85ccb3736e4770257a21cae83a9
-      size: 10679
+      md5: 5b775b2b504a42d288bb98c48dce3e40
+      size: 408
   summarize_completions:
     cmd:
     - "python src/summarize_candidates.py \\\n    results//llama-32-3B/alltypes-de-abstitle-8-0/predictions.csv
-      \\\n    results//teuken-7B-0p4/alltypes-de-abstitle-8-0/predictions.csv \\\n\
-      \  --output_file  results//predictions.csv \\\n  \n"
+      \\\n    results//mistral-7B/alltypes-de-abstitle-8-0/predictions.csv \\\n  \
+      \  results//llama-32-3B/highlemma-fewlabels/predictions.csv \\\n    results//mistral-7B/highlemma-fewlabels/predictions.csv
+      \\\n  --output_file  results//predictions.csv \\\n  \n"
     deps:
     - path: src/summarize_candidates.py
       hash: md5
-      md5: 3f0e62a2bd771e5a2dbe99fffb1dcd75
-      size: 1879
+      md5: 13ce06e178e11772424aca7de6ec6e85
+      size: 1943
     outs:
     - path: results//predictions.csv
       hash: md5
-      md5: 86b03096581626c37353c30bec540a4f
-      size: 113660
+      md5: 42c8fd11eef727d1519dfd0daca89403
+      size: 35758
   collect_stratified_results:
     cmd:
     - "Rscript src/collect_stratified_results.r \\\n  results//*/*/stratified_results.arrow
@@ -244,17 +245,18 @@ stages:
       size: 323690
   rank:
     cmd:
-    - "python src/rank.py \\\n  --dataset_file datasets/dev_sample.csv\\\n  --predictions_file
-      results//predictions.csv \\\n  --output_file results//ranked_predictions.csv\n"
+    - "python src/rank.py \\\n  --dataset_file datasets/dev_sample_small.csv\\\n \
+      \ --predictions_file results//predictions.csv \\\n  --output_file results//ranked_predictions.csv
+      \\\n"
     deps:
     - path: results//predictions.csv
       hash: md5
-      md5: 86b03096581626c37353c30bec540a4f
-      size: 113660
+      md5: 42c8fd11eef727d1519dfd0daca89403
+      size: 35758
     - path: src/rank.py
       hash: md5
-      md5: 80e880c59fc385608ccf7df8ee32860e
-      size: 11896
+      md5: d941b7785224ca675ee3db1e82c48831
+      size: 12519
     params:
       params.yaml:
         ranking.instruction: assets/instructions/ranking_instruction03.json
@@ -265,11 +267,15 @@ stages:
         ranking.score_param: relevance
         ranking.temperature: 0
         ranking.threshold_confidence: 0
+        vllm.global_samplingparams.frequency_penalty: 0
+        vllm.global_samplingparams.presence_penalty: 0
+        vllm.global_samplingparams.repetition_penalty: 1
+        vllm.global_samplingparams.top_p: 1
     outs:
     - path: results//ranked_predictions.csv
       hash: md5
-      md5: 1b7aa3d7408ff3902db58d11b468c941
-      size: 48943
+      md5: f286c7be52268c2a4d352346ffe10b66
+      size: 15027
   combine_scores:
     cmd:
     - "python src/combine_scores.py \\\n  --ranking_input results//predictions.csv
@@ -278,43 +284,43 @@ stages:
     deps:
     - path: results//predictions.csv
       hash: md5
-      md5: 86b03096581626c37353c30bec540a4f
-      size: 113660
+      md5: 42c8fd11eef727d1519dfd0daca89403
+      size: 35758
     - path: results//ranked_predictions.csv
       hash: md5
-      md5: 1b7aa3d7408ff3902db58d11b468c941
-      size: 48943
+      md5: f286c7be52268c2a4d352346ffe10b66
+      size: 15027
     - path: src/combine_scores.py
       hash: md5
-      md5: c294d9fb8ad755a5dad0b7b8a5e5657d
-      size: 1940
+      md5: bd3ceb9ed7ad9a1384fefa7e922801ad
+      size: 2137
     params:
       params.yaml:
         combining_scores.weight: 0.3
     outs:
     - path: results//predictions_with_combined_scores.csv
       hash: md5
-      md5: 4ae32ae149c83ed3b435b95cb771c181
-      size: 160277
+      md5: dc9c67cb280bc43f499048f267cac8e2
+      size: 48927
   complete@model0-prompt1:
     cmd:
     - mkdir -p results//llama-32-3B/highlemma-fewlabels
     - "python src/completion.py \\\n  --hf_model_name meta-llama/Llama-3.2-3B-Instruct
-      \\\n  --dataset_file datasets/dev_sample.csv \\\n  --completion_file results//llama-32-3B/highlemma-fewlabels/completions.csv
+      \\\n  --dataset_file datasets/dev_sample_small.csv \\\n  --completion_file results//llama-32-3B/highlemma-fewlabels/completions.csv
       \\\n  --prompt_specification assets/prompts/similarity-labelcount/highlemma_fewlabels.txt\n"
     deps:
     - path: assets/prompts/similarity-labelcount/highlemma_fewlabels.txt
       hash: md5
       md5: ae9ea4c496ee62ce5642f585a83f1694
       size: 10308
-    - path: datasets/dev_sample.csv
+    - path: datasets/dev_sample_small.csv
       hash: md5
-      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
-      size: 1391129
+      md5: 6ac26514809818ba0cc8e903d1a41005
+      size: 58134
     - path: src/completion.py
       hash: md5
-      md5: 3023b0ca09e1c0d51b9ef6f24176213b
-      size: 11338
+      md5: efc012ec4bd6a70c5ead2c4f2e681b8c
+      size: 11806
     params:
       params.yaml:
         completion.custom_instruction: assets/instructions/instruction01.txt
@@ -331,8 +337,8 @@ stages:
     outs:
     - path: results//llama-32-3B/highlemma-fewlabels/completions.csv
       hash: md5
-      md5: fb9eb79f8c0c808964d7fd2670f983fd
-      size: 156313
+      md5: 37476f151ee041b061d4e0dbb06edb2f
+      size: 7969
   complete@model0-prompt2:
     cmd:
     - mkdir -p results//llama-32-3B/highlemma-manylabels
@@ -634,21 +640,21 @@ stages:
     cmd:
     - mkdir -p results//mistral-7B/highlemma-fewlabels
     - "python src/completion.py \\\n  --hf_model_name mistralai/Mistral-7B-v0.1 \\\
-      \n  --dataset_file datasets/dev_sample.csv \\\n  --completion_file results//mistral-7B/highlemma-fewlabels/completions.csv
+      \n  --dataset_file datasets/dev_sample_small.csv \\\n  --completion_file results//mistral-7B/highlemma-fewlabels/completions.csv
       \\\n  --prompt_specification assets/prompts/similarity-labelcount/highlemma_fewlabels.txt\n"
     deps:
     - path: assets/prompts/similarity-labelcount/highlemma_fewlabels.txt
       hash: md5
       md5: ae9ea4c496ee62ce5642f585a83f1694
       size: 10308
-    - path: datasets/dev_sample.csv
+    - path: datasets/dev_sample_small.csv
       hash: md5
-      md5: f94ea6ccc3c1e17a0b0165fe0a7a436c
-      size: 1391129
+      md5: 6ac26514809818ba0cc8e903d1a41005
+      size: 58134
     - path: src/completion.py
       hash: md5
-      md5: 3023b0ca09e1c0d51b9ef6f24176213b
-      size: 11338
+      md5: efc012ec4bd6a70c5ead2c4f2e681b8c
+      size: 11806
     params:
       params.yaml:
         completion.custom_instruction: assets/instructions/instruction01.txt
@@ -665,8 +671,8 @@ stages:
     outs:
     - path: results//mistral-7B/highlemma-fewlabels/completions.csv
       hash: md5
-      md5: d6d9b7db2c5ffb356b0a32151ec8b7a6
-      size: 34185
+      md5: 67e8e14a21571ab930a23604c3cd7231
+      size: 1909
   complete@model1-prompt2:
     cmd:
     - mkdir -p results//mistral-7B/highlemma-manylabels
@@ -2822,12 +2828,12 @@ stages:
     deps:
     - path: results//llama-32-3B/highlemma-fewlabels/completions.csv
       hash: md5
-      md5: fb9eb79f8c0c808964d7fd2670f983fd
-      size: 156313
+      md5: 37476f151ee041b061d4e0dbb06edb2f
+      size: 7969
     - path: src/mapping.py
       hash: md5
-      md5: 86f64c8ad4f52e5e270f5cac97dfaaeb
-      size: 14176
+      md5: 4209acdcce1a5c727eaeae44b9b112e0
+      size: 14498
     - path: vocab/collection_copy.arrow
       hash: md5
       md5: 4f1ca8dec635885264b24f302384d9b5
@@ -2845,16 +2851,16 @@ stages:
     outs:
     - path: results//llama-32-3B/highlemma-fewlabels/mapping_stats.json
       hash: md5
-      md5: 449c67e6ae3d575e4c4ba1603ae1bf00
-      size: 88
+      md5: 1e789499264423c861162a0f5b441359
+      size: 84
     - path: results//llama-32-3B/highlemma-fewlabels/predictions.csv
       hash: md5
-      md5: 005f74c3571093083f561a7ac624e25e
-      size: 440980
+      md5: 2053f12471ac843304581b8e8b83cab8
+      size: 21053
     - path: results//llama-32-3B/highlemma-fewlabels/removed_predictions.csv
       hash: md5
-      md5: 14ba5dd953ec7d1933671f80642738b4
-      size: 18212
+      md5: 9ac792de53595b667092665d7c3e3187
+      size: 1403
   map@model0-prompt2:
     cmd:
     - "python src/mapping.py \\\n  --completion_file results//llama-32-3B/highlemma-manylabels/completions.csv
@@ -3199,12 +3205,12 @@ stages:
     deps:
     - path: results//mistral-7B/highlemma-fewlabels/completions.csv
       hash: md5
-      md5: d6d9b7db2c5ffb356b0a32151ec8b7a6
-      size: 34185
+      md5: 67e8e14a21571ab930a23604c3cd7231
+      size: 1909
     - path: src/mapping.py
       hash: md5
-      md5: 86f64c8ad4f52e5e270f5cac97dfaaeb
-      size: 14176
+      md5: 4209acdcce1a5c727eaeae44b9b112e0
+      size: 14498
     - path: vocab/collection_copy.arrow
       hash: md5
       md5: 4f1ca8dec635885264b24f302384d9b5
@@ -3222,16 +3228,16 @@ stages:
     outs:
     - path: results//mistral-7B/highlemma-fewlabels/mapping_stats.json
       hash: md5
-      md5: ae92de737d41993b0f17bbccba1f6855
-      size: 87
+      md5: 5283559cd893fdc1f3f749c38c4cc8e4
+      size: 83
     - path: results//mistral-7B/highlemma-fewlabels/predictions.csv
       hash: md5
-      md5: 5781c331667eb229342de3e4055ab159
-      size: 105118
+      md5: 8d2fb2502308752400246ff96ad1d1bb
+      size: 5085
     - path: results//mistral-7B/highlemma-fewlabels/removed_predictions.csv
       hash: md5
-      md5: dbdec02bce7550667fd90eb8d4769e47
-      size: 1543
+      md5: a46a7d399a917475dde363996b5c0a56
+      size: 268
   map@model1-prompt2:
     cmd:
     - "python src/mapping.py \\\n  --completion_file results//mistral-7B/highlemma-manylabels/completions.csv

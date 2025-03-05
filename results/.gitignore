@@ -6,3 +6,4 @@
 /stratified_results.arrow
 /stratified_results_by_model_and_prompt.arrow
 /predictions_with_combined_scores.csv
+/ranked_predictions.csv

@@ -1,18 +1,18 @@
 stages:
   create_dataset:
-    frozen: false
+    frozen: true
     desc: Extract the data from llm4subjects collection and compile into a single dataframe
     cmd: 
       - >
         python src/preprocess.py \
-          --data_path llms4subjects/shared-task-datasets/TIBKAT/ \
-          --data_splits ${general.split} \
+          --data_path ../llms4subjects/shared-task-datasets/TIBKAT/ \
+          --data_splits ${general.split} \ 
           --text_types ${general.text_types} \
           --languages ${general.languages} \
           --subjects ${general.subjects} \
           --output_file ${general.dataset_file} \
           --sample_size ${general.sample_size} \
-          --seed 42\
+          --seed 42 \
           --forbidden_docs assets/deny_list_dev_sample.csv
     deps:
       - src/preprocess.py
@@ -110,216 +110,235 @@ stages:
     - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/mapping_stats.json:
         cache: false
 
-  # summarize_completions:
-  #   desc: Run summarize-stage, summarize mapped subject terms from individual modelxprompt combinations to one file
-  #   always_changed: true # this makes the specification of deps irrelevant
-  #   cmd:
-  #   - > 
-  #     python src/summarize_candidates.py \
-  #         ${general.write_directory}/llama-32-3B/alltypes-de-abstitle-8-0/${mapping.output_file} \
-  #         ${general.write_directory}/teuken-7B-0p4/alltypes-de-abstitle-8-0/${mapping.output_file} \
-  #       --output_file  ${general.write_directory}/${mapping.output_file} \
-        
-  #   deps:
-  #   - src/summarize_candidates.py
-  #   outs:
-  #   - ${general.write_directory}/${mapping.output_file}
-
-  summarize_completions_top20-models-and-prompts:
-    desc: Run summarize-stage for top20-ensemble
-    always_changed: false 
+  summarize_completions:
+    desc: Run summarize-stage, summarize mapped subject terms from individual modelxprompt combinations to one file
+    always_changed: true # this makes the specification of deps irrelevant
     cmd:
-    - mkdir -p ${general.write_directory}/top20-models-and-prompts
     - > 
       python src/summarize_candidates.py \
           ${general.write_directory}/llama-32-3B/alltypes-de-abstitle-8-0/${mapping.output_file} \
-          ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-0/${mapping.output_file} \
-          ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-4/${mapping.output_file} \
-          ${general.write_directory}/llama31-70B/english-0-8/${mapping.output_file} \
-          ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-2/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-3/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B/english-0-8/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B/mixed-0-8/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-2/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-4/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file} \
-          ${general.write_directory}/openhermes-2p5-7B/lowlemma-fewlabels/${mapping.output_file} \
-          ${general.write_directory}/teuken-7B-0p4/highlemma-fewlabels/${mapping.output_file} \
-          ${general.write_directory}/teuken-7B-0p4/highlemma-manylabels/${mapping.output_file} \
-        --output_file  ${general.write_directory}/top20-models-and-prompts/${mapping.output_file}
+          ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-0/${mapping.output_file} \
+          ${general.write_directory}/llama-32-3B/highlemma-fewlabels/${mapping.output_file} \
+          ${general.write_directory}/mistral-7B/highlemma-fewlabels/${mapping.output_file} \
+        --output_file  ${general.write_directory}/${mapping.output_file} \
+        
     deps:
     - src/summarize_candidates.py
-    - ${general.write_directory}/llama-32-3B/alltypes-de-abstitle-8-0/${mapping.output_file}
-    - ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-0/${mapping.output_file}
-    - ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-4/${mapping.output_file}
-    - ${general.write_directory}/llama31-70B/english-0-8/${mapping.output_file}
-    - ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-2/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-3/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B/english-0-8/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B/mixed-0-8/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-2/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-4/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file}
-    - ${general.write_directory}/openhermes-2p5-7B/lowlemma-fewlabels/${mapping.output_file}
-    - ${general.write_directory}/teuken-7B-0p4/highlemma-fewlabels/${mapping.output_file}
-    - ${general.write_directory}/teuken-7B-0p4/highlemma-manylabels/${mapping.output_file}
-    params:
-    - mapping.hyperparameters.search
     outs:
-    - ${general.write_directory}/top20-models-and-prompts/${mapping.output_file}
+    - ${general.write_directory}/${mapping.output_file}
 
-  summarize_completions_one-model-all-prompts:
-    desc: Run summarize-stage for one-model-all-prompts-ensemble
-    always_changed: false 
-    cmd:
-    - mkdir -p ${general.write_directory}/one-model-all-prompts
-    - > 
-      python src/summarize_candidates.py \
-          ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-0/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-2/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-3/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/highlemma-manylabels/${mapping.output_file} \
-        --output_file  ${general.write_directory}/one-model-all-prompts/${mapping.output_file}
-    deps:
-    - src/summarize_candidates.py
-    - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-0/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-2/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-3/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/highlemma-manylabels/${mapping.output_file}
-    params:
-    - mapping.hyperparameters.search
-    outs:
-    - ${general.write_directory}/one-model-all-prompts/${mapping.output_file}
+  # summarize_completions_top20-models-and-prompts:
+  #   desc: Run summarize-stage for top20-ensemble
+  #   always_changed: false 
+  #   cmd:
+  #   - mkdir -p ${general.write_directory}/top20-models-and-prompts
+  #   - > 
+  #     python src/summarize_candidates.py \
+  #         ${general.write_directory}/llama-32-3B/alltypes-de-abstitle-8-0/${mapping.output_file} \
+  #         ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-0/${mapping.output_file} \
+  #         ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-4/${mapping.output_file} \
+  #         ${general.write_directory}/llama31-70B/english-0-8/${mapping.output_file} \
+  #         ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-2/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-3/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B/english-0-8/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B/mixed-0-8/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-2/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-4/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file} \
+  #         ${general.write_directory}/openhermes-2p5-7B/lowlemma-fewlabels/${mapping.output_file} \
+  #         ${general.write_directory}/teuken-7B-0p4/highlemma-fewlabels/${mapping.output_file} \
+  #         ${general.write_directory}/teuken-7B-0p4/highlemma-manylabels/${mapping.output_file} \
+  #       --output_file  ${general.write_directory}/top20-models-and-prompts/${mapping.output_file}
+  #   deps:
+  #   - src/summarize_candidates.py
+  #   - ${general.write_directory}/llama-32-3B/alltypes-de-abstitle-8-0/${mapping.output_file}
+  #   - ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-0/${mapping.output_file}
+  #   - ${general.write_directory}/llama31-70B/alltypes-de-abstitle-8-4/${mapping.output_file}
+  #   - ${general.write_directory}/llama31-70B/english-0-8/${mapping.output_file}
+  #   - ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-2/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B/alltypes-de-abstitle-8-3/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B/english-0-8/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B/mixed-0-8/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-2/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B-0p3/alltypes-de-abstitle-8-4/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file}
+  #   - ${general.write_directory}/openhermes-2p5-7B/lowlemma-fewlabels/${mapping.output_file}
+  #   - ${general.write_directory}/teuken-7B-0p4/highlemma-fewlabels/${mapping.output_file}
+  #   - ${general.write_directory}/teuken-7B-0p4/highlemma-manylabels/${mapping.output_file}
+  #   params:
+  #   - mapping.hyperparameters.search
+  #   outs:
+  #   - ${general.write_directory}/top20-models-and-prompts/${mapping.output_file}
 
-  summarize_completions_one-prompt-all-models:
-    desc: Run summarize-stage for one-prompt-all-models-ensemble
-    always_changed: false 
-    cmd:
-    - mkdir -p ${general.write_directory}/one-prompt-all-models
-    - > 
-      python src/summarize_candidates.py \
-          ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/llama-32-3B/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/mistral-7B-0p3/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/openhermes-2p5-7B/english-2-12/${mapping.output_file} \
-          ${general.write_directory}/teuken-7B-0p4/english-2-12/${mapping.output_file} \
-        --output_file  ${general.write_directory}/one-prompt-all-models/${mapping.output_file} 
-    deps:
-    - src/summarize_candidates.py
-    - ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/llama-32-3B/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/mistral-7B-0p3/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/openhermes-2p5-7B/english-2-12/${mapping.output_file}
-    - ${general.write_directory}/teuken-7B-0p4/english-2-12/${mapping.output_file}
-    params:
-    - mapping.hyperparameters.search
-    outs:
-    - ${general.write_directory}/one-prompt-all-models/${mapping.output_file}
+  # summarize_completions_one-model-all-prompts:
+  #   desc: Run summarize-stage for one-model-all-prompts-ensemble
+  #   always_changed: false 
+  #   cmd:
+  #   - mkdir -p ${general.write_directory}/one-model-all-prompts
+  #   - > 
+  #     python src/summarize_candidates.py \
+  #         ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-0/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-2/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-3/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/highlemma-manylabels/${mapping.output_file} \
+  #       --output_file  ${general.write_directory}/one-model-all-prompts/${mapping.output_file}
+  #   deps:
+  #   - src/summarize_candidates.py
+  #   - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-4/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/english-0-8/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/highlemma-fewlabels/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/lowlemma-fewlabels/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-0/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-2/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/alltypes-de-abstitle-8-3/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/highlemma-manylabels/${mapping.output_file}
+  #   params:
+  #   - mapping.hyperparameters.search
+  #   outs:
+  #   - ${general.write_directory}/one-model-all-prompts/${mapping.output_file}
 
-  summarize_completions_one-prompt-one-model:
-    desc: Run summarize-stage for one-prompt-one-model-ensemble
-    always_changed: false 
-    cmd:
-    - mkdir -p ${general.write_directory}/one-prompt-one-model
-    - > 
-      python src/summarize_candidates.py \
-          ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file} \
-        --output_file  ${general.write_directory}/one-prompt-one-model/${mapping.output_file} 
-    deps:
-    - src/summarize_candidates.py
-    - ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file}
-    params:
-    - mapping.hyperparameters.search
-    outs:
-    - ${general.write_directory}/one-prompt-one-model/${mapping.output_file}
+  # summarize_completions_one-prompt-all-models:
+  #   desc: Run summarize-stage for one-prompt-all-models-ensemble
+  #   always_changed: false 
+  #   cmd:
+  #   - mkdir -p ${general.write_directory}/one-prompt-all-models
+  #   - > 
+  #     python src/summarize_candidates.py \
+  #         ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/llama-32-3B/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/mistral-7B-0p3/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/openhermes-2p5-7B/english-2-12/${mapping.output_file} \
+  #         ${general.write_directory}/teuken-7B-0p4/english-2-12/${mapping.output_file} \
+  #       --output_file  ${general.write_directory}/one-prompt-all-models/${mapping.output_file} 
+  #   deps:
+  #   - src/summarize_candidates.py
+  #   - ${general.write_directory}/llama31-70B/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-8x7B-0p1/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/llama-32-3B/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/mistral-7B-0p3/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/openhermes-2p5-7B/english-2-12/${mapping.output_file}
+  #   - ${general.write_directory}/teuken-7B-0p4/english-2-12/${mapping.output_file}
+  #   params:
+  #   - mapping.hyperparameters.search
+  #   outs:
+  #   - ${general.write_directory}/one-prompt-all-models/${mapping.output_file}
 
+  # summarize_completions_one-prompt-one-model:
+  #   desc: Run summarize-stage for one-prompt-one-model-ensemble
+  #   always_changed: false 
+  #   cmd:
+  #   - mkdir -p ${general.write_directory}/one-prompt-one-model
+  #   - > 
+  #     python src/summarize_candidates.py \
+  #         ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file} \
+  #       --output_file  ${general.write_directory}/one-prompt-one-model/${mapping.output_file} 
+  #   deps:
+  #   - src/summarize_candidates.py
+  #   - ${general.write_directory}/mistral-8x7B-0p1/mixed-0-8/${mapping.output_file}
+  #   params:
+  #   - mapping.hyperparameters.search
+  #   outs:
+  #   - ${general.write_directory}/one-prompt-one-model/${mapping.output_file}
+
+  # rank:
+  #   foreach:
+  #     - top20-models-and-prompts
+  #     - one-model-all-prompts
+  #     - one-prompt-all-models
+  #     - one-prompt-one-model
+  #   do:
+  #     desc: Run rank-stage for all ensembles
+  #     cmd:
+  #     - > 
+  #       python src/rank.py \
+  #         --dataset_file ${general.dataset_file}\
+  #         --predictions_file ${general.write_directory}/${item}/${mapping.output_file} \
+  #         --output_file ${general.write_directory}/${item}/${ranking.output_file} \
+  #     params:
+  #     - vllm.global_samplingparams.presence_penalty
+  #     - vllm.global_samplingparams.frequency_penalty
+  #     - vllm.global_samplingparams.repetition_penalty
+  #     - vllm.global_samplingparams.top_p
+  #     - ranking.model
+  #     - ranking.temperature
+  #     - ranking.instruction
+  #     - ranking.max_suggestions
+  #     - ranking.min_confidence
+  #     - ranking.threshold_confidence
+  #     - ranking.max_confidence
+  #     - ranking.score_param
+  #     deps:
+  #     - src/rank.py
+  #     - ${general.write_directory}/${item}/${mapping.output_file}
+  #     outs:
+  #     - ${general.write_directory}/${item}/${ranking.output_file}
+  
   rank:
-    foreach:
-      - top20-models-and-prompts
-      - one-model-all-prompts
-      - one-prompt-all-models
-      - one-prompt-one-model
-    do:
-      desc: Run rank-stage for all ensembles
-      cmd:
-      - > 
-        python src/rank.py \
-          --dataset_file ${general.dataset_file}\
-          --predictions_file ${general.write_directory}/${item}/${mapping.output_file} \
-          --output_file ${general.write_directory}/${item}/${ranking.output_file} \
-      params:
-      - vllm.global_samplingparams.presence_penalty
-      - vllm.global_samplingparams.frequency_penalty
-      - vllm.global_samplingparams.repetition_penalty
-      - vllm.global_samplingparams.top_p
-      - ranking.model
-      - ranking.temperature
-      - ranking.instruction
-      - ranking.max_suggestions
-      - ranking.min_confidence
-      - ranking.threshold_confidence
-      - ranking.max_confidence
-      - ranking.score_param
-      deps:
-      - src/rank.py
-      - ${general.write_directory}/${item}/${mapping.output_file}
-      outs:
-      - ${general.write_directory}/${item}/${ranking.output_file}
+    desc: Run rank-stage for all ensembles
+    cmd:
+    - > 
+      python src/rank.py \
+        --dataset_file ${general.dataset_file}\
+        --predictions_file ${general.write_directory}/${mapping.output_file} \
+        --output_file ${general.write_directory}/${ranking.output_file} \
+    params:
+    - vllm.global_samplingparams.presence_penalty
+    - vllm.global_samplingparams.frequency_penalty
+    - vllm.global_samplingparams.repetition_penalty
+    - vllm.global_samplingparams.top_p
+    - ranking.model
+    - ranking.temperature
+    - ranking.instruction
+    - ranking.max_suggestions
+    - ranking.min_confidence
+    - ranking.threshold_confidence
+    - ranking.max_confidence
+    - ranking.score_param
+    deps:
+    - src/rank.py
+    - ${general.write_directory}/${mapping.output_file}
+    outs:
+    - ${general.write_directory}/${ranking.output_file}
 
   combine_scores:
-    foreach:
-      top20-models-and-prompts:
-        weight: 0.3
-      one-model-all-prompts:
-        weight: 0.3
-      one-prompt-all-models: 
-        weight: 0.3
-      one-prompt-one-model:
-        weight: 0.3
-    do:
-      desc: Run combine-stage for all ensembles to produce final results
-      cmd: 
-        - >
-          python src/combine_scores.py \
-            --ranking_input ${general.write_directory}/${key}/${mapping.output_file} \
-            --ranking_output ${general.write_directory}/${key}/${ranking.output_file} \
-            --weight_score ${item.weight} \
-            --output_file ${general.write_directory}/${key}/${combining_scores.output_file}
-      params:
-        - combining_scores.weight
-      deps:
-        - src/combine_scores.py
-        - ${general.write_directory}/${key}/${mapping.output_file}
-        - ${general.write_directory}/${key}/${ranking.output_file}
-      outs:
-        - ${general.write_directory}/${key}/${combining_scores.output_file}
+    desc: Run combine-stage for all ensembles to produce final results
+    cmd: 
+      - >
+        python src/combine_scores.py \
+          --ranking_input ${general.write_directory}/${mapping.output_file} \
+          --ranking_output ${general.write_directory}/${ranking.output_file} \
+          --weight_score 0.3 \
+          --output_file ${general.write_directory}/${combining_scores.output_file}
+    params:
+      - combining_scores.weight
+    deps:
+      - src/combine_scores.py
+      - ${general.write_directory}/${mapping.output_file}
+      - ${general.write_directory}/${ranking.output_file}
+    outs:
+      - ${general.write_directory}/${combining_scores.output_file}
 
  

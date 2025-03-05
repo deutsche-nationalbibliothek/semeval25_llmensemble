@@ -11,9 +11,9 @@ general:
   read_directory: datasets/
   write_directory: results/
   dataset_file: 
-    datasets/dev_sample.csv
+    datasets/dev_sample_small.csv
   split: dev
-  sample_size: 1000
+  sample_size: 50
   text_types: Article-Book-Conference-Report-Thesis
   subjects: all-subjects
   languages: de-en
@@ -23,7 +23,7 @@ vllm:
   engineargs:
     task: generate
     gpu_memory_utilization: 0.95
-    tensor_parallel_size: 2
+    tensor_parallel_size: 1
     dtype: float16
     download_dir: /home/huggingface-cache/hub
     enforce_eager: True
@@ -39,38 +39,38 @@ language_models:
   short_name: llama-32-3B
 - hf_model_name: mistralai/Mistral-7B-v0.1
   short_name: mistral-7B
-- hf_model_name: mistralai/Mistral-7B-Instruct-v0.3
-  short_name: mistral-7B-0p3
-- hf_model_name: teknium/OpenHermes-2.5-Mistral-7B
-  short_name: openhermes-2p5-7B
-- hf_model_name: openGPT-X/Teuken-7B-instruct-research-v0.4
-  short_name: teuken-7B-0p4
-- hf_model_name: meta-llama/Meta-Llama-3.1-70B-Instruct
-  short_name: llama31-70B
-- hf_model_name: mistralai/Mixtral-8x7B-Instruct-v0.1
-  short_name: mistral-8x7B-0p1
+# - hf_model_name: mistralai/Mistral-7B-Instruct-v0.3
+#   short_name: mistral-7B-0p3
+# - hf_model_name: teknium/OpenHermes-2.5-Mistral-7B
+#   short_name: openhermes-2p5-7B
+# - hf_model_name: openGPT-X/Teuken-7B-instruct-research-v0.4
+#   short_name: teuken-7B-0p4
+# - hf_model_name: meta-llama/Meta-Llama-3.1-70B-Instruct
+#   short_name: llama31-70B
+# - hf_model_name: mistralai/Mixtral-8x7B-Instruct-v0.1
+#   short_name: mistral-8x7B-0p1
 completion:
   prompt_specification_files:
   - file: assets/prompts/german/alltypes_de_abstitle_8_0.txt
     short_name: alltypes-de-abstitle-8-0
   - file: assets/prompts/similarity-labelcount/highlemma_fewlabels.txt
     short_name: highlemma-fewlabels
-  - file: assets/prompts/similarity-labelcount/highlemma_manylabels.txt
-    short_name: highlemma-manylabels
-  - file: assets/prompts/similarity-labelcount/lowlemma_fewlabels.txt
-    short_name: lowlemma-fewlabels
-  - file: assets/prompts/german/alltypes_de_abstitle_8_2.txt
-    short_name: alltypes-de-abstitle-8-2
-  - file: assets/prompts/german/alltypes_de_abstitle_8_3.txt
-    short_name: alltypes-de-abstitle-8-3
-  - file: assets/prompts/german/alltypes_de_abstitle_8_4.txt
-    short_name: alltypes-de-abstitle-8-4
-  - file: assets/prompts/english/english_0_8.txt
-    short_name: english-0-8
-  - file: assets/prompts/english/english_2_12.txt
-    short_name: english-2-12
-  - file: assets/prompts/mixed_language/mixed_0_8.txt
-    short_name: mixed-0-8
+  # - file: assets/prompts/similarity-labelcount/highlemma_manylabels.txt
+  #   short_name: highlemma-manylabels
+  # - file: assets/prompts/similarity-labelcount/lowlemma_fewlabels.txt
+  #   short_name: lowlemma-fewlabels
+  # - file: assets/prompts/german/alltypes_de_abstitle_8_2.txt
+  #   short_name: alltypes-de-abstitle-8-2
+  # - file: assets/prompts/german/alltypes_de_abstitle_8_3.txt
+  #   short_name: alltypes-de-abstitle-8-3
+  # - file: assets/prompts/german/alltypes_de_abstitle_8_4.txt
+  #   short_name: alltypes-de-abstitle-8-4
+  # - file: assets/prompts/english/english_0_8.txt
+  #   short_name: english-0-8
+  # - file: assets/prompts/english/english_2_12.txt
+  #   short_name: english-2-12
+  # - file: assets/prompts/mixed_language/mixed_0_8.txt
+  #   short_name: mixed-0-8
   completion_filename: completions.csv
   batch_size: 20
   prompt_template_info: assets/templates/model_to_template.json
@@ -112,7 +112,7 @@ combining_scores:
 
 eval:
   ground_truth_path: datasets/
-  ground_truth_file: tib-core-subjects-Article-Book-Conference-Report-Thesis-de-dev.csv
+  ground_truth_file: dev_sample_small.csv
   ordinal_ranking: false
 
 
