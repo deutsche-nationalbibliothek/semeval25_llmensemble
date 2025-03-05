@@ -1,6 +1,7 @@
 """
 File name: combine_results.py
-Description: Contains code to optimize the selection of modelxprompt combinations.
+Description: Contains code to optimize the selection of model x prompt 
+combinations.
 """
 
 import os
