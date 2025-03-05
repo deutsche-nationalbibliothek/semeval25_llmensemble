@@ -53,7 +53,7 @@ stages:
     matrix:
       model: ${language_models}
       prompt: ${completion.prompt_specification_files}
-    desc: Run the complete-stage, generate free keywords with a matrix of modelxprompt combinations
+    desc: Generate free keywords for a matrix of model x prompt combinations
     cmd:
     - mkdir -p ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}
     - > 
@@ -85,7 +85,7 @@ stages:
     matrix:
       model: ${language_models}
       prompt: ${completion.prompt_specification_files}
-    desc: Run the map-stage, map keywords to GND subject terms
+    desc: Map keywords to GND subject terms for all model x prompt combinations
     cmd:
     - > 
       python src/mapping.py \
@@ -110,23 +110,8 @@ stages:
     - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/mapping_stats.json:
         cache: false
 
-  # summarize_completions:
-  #   desc: Run summarize-stage, summarize mapped subject terms from individual modelxprompt combinations to one file
-  #   always_changed: true # this makes the specification of deps irrelevant
-  #   cmd:
-  #   - > 
-  #     python src/summarize_candidates.py \
-  #         ${general.write_directory}/llama-32-3B/alltypes-de-abstitle-8-0/${mapping.output_file} \
-  #         ${general.write_directory}/teuken-7B-0p4/alltypes-de-abstitle-8-0/${mapping.output_file} \
-  #       --output_file  ${general.write_directory}/${mapping.output_file} \
-        
-  #   deps:
-  #   - src/summarize_candidates.py
-  #   outs:
-  #   - ${general.write_directory}/${mapping.output_file}
-
   summarize_completions_top20-models-and-prompts:
-    desc: Run summarize-stage for top20-ensemble
+    desc: Run summarize-stage for top-20-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/top20-models-and-prompts
@@ -268,7 +253,7 @@ stages:
       - one-prompt-all-models
       - one-prompt-one-model
     do:
-      desc: Run rank-stage for all ensembles
+      desc: Run rank-stage for all ensemble-strategies
       cmd:
       - > 
         python src/rank.py \
@@ -305,7 +290,7 @@ stages:
       one-prompt-one-model:
         weight: 0.3
     do:
-      desc: Run combine-stage for all ensembles to produce final results
+      desc: Run combine-stage for all ensemble-strategies to produce final results
       cmd: 
         - >
           python src/combine_scores.py \

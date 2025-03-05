@@ -57,7 +57,6 @@ class Mapping:
 
         for attempt in range(max_retries):
             try:
-                # comment_mk: if you configure the collection with vectorizer, you can omit the embedding step here
                 embedding = list(
                     np.array(
                         requests.post(
@@ -68,8 +67,6 @@ class Mapping:
                     ).reshape(-1)
                 )
                 if self.search == "vector":
-                    # comment_mk: if we add another LLM stage that ranks and checks outputs for plausibility, we can set the limit higher
-                    #   to include other "close matches"
                     response = chunks.query.near_vector(
                         near_vector=embedding,
                         limit=1,
@@ -282,6 +279,7 @@ class LLMMapping:
                 )
                 df_predictions = df_predictions.dropna(subset=["label_id"])
         else:  # when weaviate already return external gnd_id
+            # add "gnd:" prefix to label_id to ensure consistency with TIBKAT
             df_predictions["label_id"] = df_predictions["label_id"].apply(
                 lambda x: "gnd:" + str(x)
             )
