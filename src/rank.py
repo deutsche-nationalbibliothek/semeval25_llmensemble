@@ -159,7 +159,7 @@ class Ranker:
                 "term": row["term"],
                 "count": row["count"],
                 "cosine_similarity": row["cosine_similarity"],
-                "hybrid_score": row["hybrid_score"],
+                # "hybrid_score": row["hybrid_score"],
                 "label_id": row["label_id"],
                 "score": row["score"],
             }
