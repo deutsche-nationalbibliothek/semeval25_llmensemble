@@ -1,6 +1,6 @@
 # DNB-AI-Project at SemEval-2025 Task 5: An LLM-Ensemble Approach for Automated Subject Indexing
 
-This repository is our implementation for the SemEval-202525 Task 5 - LLMs4Subjects. Here is the webpage of the task:
+This repository is our implementation for the SemEval-2025 Task 5 - LLMs4Subjects. Here is the webpage of the task:
 https://sites.google.com/view/llms4subjects/home?authuser=0
 
 The main idea of our system is to leverage a range of few-shot prompts and LLMs and ensemble the results, no fine-tuning required. We hande the vocabulary by mapping the LLM's keywords onto it using embeddings.
@@ -25,7 +25,7 @@ Please find our full system description in our submitted paper: [TBA]
 
 The subject tagging system mainly consists of five stages:
 
-  * `complete`: Generate free keywords with different LLM x prompt combinations
+  * `complete`: Generate free keywords with varying LLM x prompt combinations
   * `map`: Map keywords to the target vocab
   * `summarize`: Aggregate suggestions from individual model x prompt experiments to an ensemble
   * `rank`: Use an LLM to generate relevance scores for all suggestions
@@ -58,7 +58,7 @@ flowchart TD
 
 # Results
 
-On a dev-sample of 1000 documents that was not used in optimizing our set-up (See documents in `assets/dev-test_idns.csv`), we can report the following results:
+On a dev-sample of 1000 documents that was not used in optimizing (`dev-test`)our set-up (See documents in `assets/dev-test_idns.csv`), we can report the following results:
 
 |Ensemble Strategy     | Precision| Recall|    F1| PR-AUC|
 |:---------------------|---------:|------:|-----:|------:|
@@ -77,7 +77,7 @@ cross on the precision-recall curves:
 # Usage
 
 ## Dataset recreation
-To optimize and test our system, we used two sampled splits of the dev-set of ~1000 items, dev-opt and dev-test.
+To optimize and test our system, we used two sampled splits of the dev-set of ~1000 items, `dev-opt` and `dev-test`.
 This is how you can re-create them (run from ):
 ```bash
 python src/preprocess.py -d llms4subjects/shared-task-datasets/TIBKAT/ -s dev -t Article-Book-Conference-Report-Thesis -l en de -u all-subjects-tib-core-subjects -o datasets/dev-test.csv --include_docs assets/dev-test_idns.csv 
@@ -105,7 +105,7 @@ execution of vLLM. In particular, set `tensor_parallel_size` to the number
 of available GPU-devices.
 
 **Note:** Make sure you have enough GPU memory to run all the models specified
-  in the `params.yaml`` file. 
+  in the `params.yaml` file. 
 
 ## Weaviate and Text embedding service
 
