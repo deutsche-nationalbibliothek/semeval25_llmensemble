@@ -75,8 +75,9 @@ cross on the precision-recall curves:
 1. Clone this repository.
 2. Get the data from llms4subjects: `git submodule update --init`
 3. Setup local Text Embedding Service with [Huggingface TEI](https://huggingface.co/docs/text-embeddings-inference/index) and Setup a local Weaviate vector storage (see instructions with docker-compose below)
-5. Install the requirements from `requirements.txt`
-6. Reproduce the pipeline `dvc repro`
+4. Install the packages from `requirements.txt` (Python 3.12.2), e.g. using `conda` or `mamba`.
+  (Hint: As of 05-03-2025, you manually need to install `libsqlite==3.48.0` for DVC to work properly.)
+1. Reproduce the pipeline: `dvc repro`
 
 # Usage
 
