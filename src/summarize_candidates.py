@@ -1,6 +1,7 @@
 """
 File name: summarize_candidates.py
-Description: Run the summarize-stage of our pipeline, which combines the results of the modelxprompt
+Description: Run the summarize-stage of our pipeline, which combines the
+ results of the model x prompt experiments
 """
 
 from argparse import ArgumentParser
@@ -28,7 +29,9 @@ def execute():
         )
         new_input = (
             new_input.groupby(["doc_id", "label_id"])
-            .agg({"cosine_similarity": "max", "candidate": "last", "term": "last"})
+            .agg({"cosine_similarity": "max", 
+                  "hybrid_score": "max",
+                  "candidate": "last", "term": "last"})
             .reset_index()
         )
 
@@ -44,7 +47,9 @@ def execute():
 
     df_grouped = (
         df.groupby(["doc_id", "label_id"])
-        .agg({"score": "sum", "term": "last", "cosine_similarity": "max"})
+        .agg({"score": "sum", "term": "last", 
+              "hybrid_score": "max",
+              "cosine_similarity": "max"})
         .reset_index()
     )
     # Add a count column
