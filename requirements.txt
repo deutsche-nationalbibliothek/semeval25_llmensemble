@@ -10,3 +10,4 @@ tqdm==4.66.3
 transformers==4.48.2
 vllm==0.7.2
 weaviate_client==4.6.3
+libsqlite==3.48.0
