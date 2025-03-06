@@ -59,9 +59,9 @@ On a dev-sample of 1000 documents that was not used in optimizing (`dev-test`)ou
 |Ensemble Strategy     | Precision| Recall|    F1| PR-AUC|
 |:---------------------|---------:|------:|-----:|------:|
 |top-20-ensemble       |     0.488|  0.459| 0.420|  0.411|
-|one-model-all-prompts |     0.481|  0.407| 0.393|  0.344|
-|one-prompt-all-models |     0.492|  0.414| 0.407|  0.375|
-|one-model-one-prompt  |     0.461|  0.385| 0.380|  0.235|
+|one-model-all-prompts |     0.482|  0.407| 0.394|  0.344|
+|one-prompt-all-models |     0.493|  0.415| 0.408|  0.375|
+|one-model-one-prompt  |     0.461|  0.384| 0.380|  0.235|
 
 Precision, Recall and F1 are computed as document averages (macro-avg) and 
 refer to the optimal calibration of the system, as marked with a 
