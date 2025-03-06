@@ -11,12 +11,10 @@ stages:
           --languages ${general.languages} \
           --subjects ${general.subjects} \
           --output_file ${general.dataset_file} \
-          --sample_size ${general.sample_size} \
-          --seed 42\
-          --forbidden_docs assets/deny_list_dev_sample.csv
+          --include_docs assets/dev-test_idns.csv
     deps:
       - src/preprocess.py
-      - assets/deny_list_dev_sample.csv
+      - assets/dev-test_idns.csv
     params:
       - general.split
       - general.text_types
@@ -276,6 +274,7 @@ stages:
       deps:
       - src/rank.py
       - ${general.write_directory}/${item}/${mapping.output_file}
+      - ${general.dataset_file}
       outs:
       - ${general.write_directory}/${item}/${ranking.output_file}
 
