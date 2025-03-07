@@ -11,7 +11,7 @@ from dvc.api import params_show
 import numpy as np
 
 # Load parameters from params.yaml
-params = params_show()
+params = params_show("params.yaml")
 model_name = params["general"]["embedding_model"]
 batch_size = params["general"]["batch_size"]
 

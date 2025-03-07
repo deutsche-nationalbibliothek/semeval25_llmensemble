@@ -149,7 +149,7 @@ class LLMMapping:
             allowed_subjects (str): csv list of allowed subjects TODO: remove this for publication?
         """
 
-        self.dvc_params = params_show()
+        self.dvc_params = params_show("params.yaml")
         self.p_general = self.dvc_params["general"]
         self.p_mapping = self.dvc_params["mapping"]
 

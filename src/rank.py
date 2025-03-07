@@ -41,7 +41,7 @@ class Ranker:
             output_file (str): Arrow output file (for evaluation).
         """
 
-        self.dvc_params = params_show()
+        self.dvc_params = params_show("params.yaml")
         self.p_general = self.dvc_params["general"]
         self.vllm_engineargs = self.dvc_params["vllm"]["engineargs"]
         self.p_completion = self.dvc_params["completion"]
