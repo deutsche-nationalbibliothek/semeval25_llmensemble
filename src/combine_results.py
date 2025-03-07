@@ -1,26 +1,55 @@
-import os 
+"""
+File name: combine_results.py
+Description: Contains code to optimize the selection of model x prompt 
+combinations.
+"""
+
+import os
 from itertools import combinations
 import random
 import json
 from tqdm import tqdm
+from argparse import ArgumentParser
 
-def combine_results(results_dir, 
-                    model_list, 
-                    prompt_list, 
-                    n_combinations, 
-                    pred_filename, 
-                    output_dir, 
-                    sample=10, 
-                    max_bigmodel= 3,
-                    big_models = ["llama31-70B", "mistral-8x7B-0p1"],
-                    gt_file="/home/lisa/repos/semeval/datasets/all-subjects-tib-core-subjects-Article-Book-Conference-Report-Thesis-en-de-dev_sample1000.csv"):
+
+def combine_results(
+    results_dir: str,
+    model_list: list,
+    prompt_list: list,
+    n_combinations: int,
+    pred_filename: str,
+    output_dir: str,
+    gt_file: str,
+    sample: int = 10,
+    max_bigmodel: int = 3,
+    big_models: list = ["llama31-70B", "mistral-8x7B-0p1"],
+):
     """
-    Find the best combinations of a list of prompts and model combinations. 
+    Find the best combinations of a list of prompts and model combinations.
     In the output dir, the results are in csv and arrow files,
     containing the number of combinations in the ensemble, e.g: combi_2.csv, combi_2.arrow.
 
     The best combination and results is finally written again.
-    
+
+    Args:
+        results_dir (str): The directory to read results from.
+        model_list (list): List of models to combine, must correspond to
+                            subfolders in the results directory.
+        prompt_list (list): List of prompts to combine, must correspond to
+                            sub-subfolders in the results directory.
+        n_combinations (int): How many prompt-model combinations to combine.
+        pred_filename (str): The name of the individual prediction files.
+        output_dir (str): The directory to write the best combinations to.
+        gt_file (str): The ground-truth file, created with preprocess.py.
+        sample (int): How many samples to take to find the best combination.
+        max_bigmodel (int): How many combinations with a big model to include
+                            (Reason: big models are especially heavy in inference time).
+        big_models (list): List of models that are considered big models.
+    Writes:
+        best_combinations_{n_combinations}.json: JSON dump of a list of the best modelxprompt combinations.
+        combi_{n_combinations}.csv: The combined results of the best combination.
+        The metrics/output files from the eval-pipeline
+
     """
     pr_aucs = {}
     # first step: get all the actually existing combinations
@@ -28,54 +57,69 @@ def combine_results(results_dir,
     existing_combinations_big = []
     # print(os.path.abspath(os.curdir))
     cwd = os.getcwd()
-    # print(f"{cwd=}")
     results_dir = cwd + "/" + results_dir
-    # print(f"{results_dir=}")
     output_dir = cwd + "/" + output_dir
-    # print(f"{output_dir=}")
     for model in model_list:
         for prompt in prompt_list:
-            print("Checking: " +f"{results_dir}/{model}/{prompt}/{pred_filename}")
-            if os.path.exists( f"{results_dir}/{model}/{prompt}/{pred_filename}"):
+            print("Checking: " + f"{results_dir}/{model}/{prompt}/{pred_filename}")
+            if os.path.exists(f"{results_dir}/{model}/{prompt}/{pred_filename}"):
                 if model in model in big_models:
                     existing_combinations_big.append((model, prompt))
                 else:
                     existing_combinations.append((model, prompt))
-                # print("Exists!")
             else:
-                print("Does not exist: ", f"{results_dir}/{model}/{prompt}/{pred_filename}")	
+                print(
+                    "Does not exist: ",
+                    f"{results_dir}/{model}/{prompt}/{pred_filename}",
+                )
     print("Existing combinations: ", len(existing_combinations))
-    
+
     if n_combinations - max_bigmodel > len(existing_combinations):
         print(f"Sample size is too large, using all combinations instead")
         n_combinations = len(existing_combinations) + max_bigmodel
-    
+
     if max_bigmodel > len(existing_combinations_big):
         print(f"Sample size is too large, using all big model combinations instead")
         max_bigmodel = len(existing_combinations_big)
     if max_bigmodel > n_combinations:
         max_bigmodel = n_combinations
-        print("Setting max_bigmodel to n_combinations as a too big value was entered for it.")
+        print(
+            "Setting max_bigmodel to n_combinations as a too big value was entered for it."
+        )
 
     # helper function to reduce code duplication
     def run_commands(combination, pr_auc_dict):
-        # print(f"{combination=}\n----\n")
-        combi_string = " ".join([f"{results_dir}/{model}/{prompt}/{pred_filename}" for model, prompt in combination])
-        summarize_command = "python src/summarize_candidates.py " \
-                       + combi_string \
-                       + " --output_file " + output_dir + "combi_" + str (n_combinations)  + ".csv" \
-                       + " --output_file_eval " + output_dir + "combi_" + str(n_combinations)  + ".arrow" 
-        # print("Would run this summarize command: " + summarize_command)
-        eval_command = "Rscript src/compute_metrics.r "+ "--ground_truth " + gt_file \
-                            + " --predictions " + output_dir + "combi_" + str(n_combinations)  + ".arrow" \
-                            + " --ordinal_ranking FALSE" \
-                            + " --ignore_unmatched_docs FALSE" \
-                            + " --out_folder " + output_dir
-        # print("Would run this eval command: "+ eval_command)
+        combi_string = " ".join(
+            [
+                f"{results_dir}/{model}/{prompt}/{pred_filename}"
+                for model, prompt in combination
+            ]
+        )
+        summarize_command = (
+            "python src/summarize_candidates.py "
+            + combi_string
+            + " --output_file "
+            + output_dir
+            + "combi_"
+            + str(n_combinations)
+            + ".csv"
+        )
+        eval_command = (
+            "Rscript src/R/eval/compute_metrics.r "
+            + "--ground_truth "
+            + gt_file
+            + " --predictions "
+            + output_dir
+            + "combi_"
+            + str(n_combinations)
+            + ".csv"
+            + " --ordinal_ranking FALSE"
+            + " --ignore_unmatched_docs FALSE"
+            + " --out_folder "
+            + output_dir
+        )
         run_summarise = os.popen(summarize_command).read()
-        # print(f"{run_summarise=}")
         run_eval = os.popen(eval_command).read()
-        # print(f"{run_eval=}")
         try:
             print("Would try to open: " + output_dir + "pr_auc.json")
             with open(output_dir + "pr_auc.json", "r") as f:
@@ -83,29 +127,34 @@ def combine_results(results_dir,
                 return pr_auc_dict
         except FileNotFoundError:
             print(f"Error in {combination}, no pr_auc.json found")
-        
+
     for i in tqdm(range(sample)):
-        # call run_commands here
-        sampled_combinations_small = sorted(random.sample(existing_combinations, n_combinations-max_bigmodel))
+        sampled_combinations_small = sorted(
+            random.sample(existing_combinations, n_combinations - max_bigmodel)
+        )
         print("Sampled small: ", sampled_combinations_small)
-        sampled_combinations_big = sorted(random.sample(existing_combinations_big, max_bigmodel))
+        sampled_combinations_big = sorted(
+            random.sample(existing_combinations_big, max_bigmodel)
+        )
         print("Sampled big: ", sampled_combinations_big)
-        sampled_combinations = tuple(sampled_combinations_small + sampled_combinations_big)
-        # print("Sample: ", i)
-        # print("\n".join([str(x) for x in list(enumerate(sampled_combinations))]))
+        sampled_combinations = tuple(
+            sampled_combinations_small + sampled_combinations_big
+        )
         pr_aucs = run_commands(sampled_combinations, pr_aucs)
-    
-        
-    # get the best three combinations
-    best_combinations = sorted(pr_aucs.items(), key=lambda x: x[1], reverse=True)[:10] 
+
+    # get the best ten combinations
+    best_combinations = sorted(pr_aucs.items(), key=lambda x: x[1], reverse=True)[:10]
     print(f"Best combinations: {best_combinations}")
-    with open(output_dir + "best_combinations_{}.json".format(n_combinations), "w") as f:
+    with open(
+        output_dir + "best_combinations_{}.json".format(n_combinations), "w"
+    ) as f:
         json.dump(best_combinations, f)
-    best_combi = best_combinations[0][0]  
-    # write the best combi    
+    best_combi = best_combinations[0][0]
+    # write the best combi
     pr_aucs = run_commands(best_combi, pr_aucs)
     print(f"Best combinations: {best_combinations}")
     return pr_aucs
+
 
 # Functions helping to determine, how many different combinations of promptsxmodels are possible, when assuming different numbers of combinations
 def factorial(n):
@@ -113,20 +162,124 @@ def factorial(n):
         return 1
     else:
         return n * factorial(n - 1)
-    
+
+
 def possible_combinations(models, prompts, k):
-    n=len(models)*len(prompts)
-    # print("n:", n)
+    n = len(models) * len(prompts)
     return int(factorial(n) / (factorial(k) * factorial(n - k)))
 
-# tmp:
-# models = ["llama31-8B", "llama-323B", "mistral-7B", "openhermes-2p5-7B", 
-#           "qwen2-7B", "teuken-7B-0p4", 
-#           "llama31-70B", "mistral-7B-0p3", "mistral-8x7B-0p1"]
-# prompts = ["alltypes-de-abstitle-8-0", 
-#           #  "highlemma-fewlabels",
-#            "highlemma-manylabels",
-#           #  "lowlemma-fewlabels",
-#           #  "lowlemma-manylabels", 
-#            "alltypes-de-abstitle-8-1", "alltypes-de-abstitle-8-2", "alltypes-de-abstitle-8-3","alltypes-de-abstitle-8-4"]
-# o_d = "/assets"
+
+def execute():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--results_dir", help="Directory with the results", type=str, required=True
+    )
+    parser.add_argument(
+        "--model_list",
+        help="List of model names (short names) to consider. Enter as separate strings",
+        type=str,
+        nargs="+",
+        required=True,
+    )
+    parser.add_argument(
+        "--prompt_list",
+        help="List of prompts (short names) to consider. Enter as separate strings",
+        type=str,
+        nargs="+",
+        required=True,
+    )
+    parser.add_argument(
+        "--n_combinations",
+        help="Number of modelxprompt combinations in the ensemble you want to optimize",
+        type=int,
+        required=True,
+    )
+    parser.add_argument(
+        "--pred_filename",
+        help="Name of the individual prediction files",
+        type=str,
+        required=True,
+    )
+    parser.add_argument(
+        "--output_dir",
+        help="Directory to write the best combinations to.",
+        type=str,
+        required=True,
+    )
+    parser.add_argument(
+        "--gt_file",
+        help="Ground-truth file, created with preprocess.py",
+        type=str,
+        required=True,
+    )
+    parser.add_argument(
+        "--sample",
+        help="How many samples to take to find the best combination (default:10)",
+        type=int,
+        default=10,
+        required=False,
+    )
+    parser.add_argument(
+        "--max_bigmodel",
+        help="How many combinations with a big model to include (default:3)",
+        type=int,
+        default=3,
+        required=False,
+    )
+    parser.add_argument(
+        "--big_models",
+        help="List of models that are considered big models (default: llama31-70B, mistral-8x7B-0p1). Enter as separate strings",
+        type=str,
+        nargs="+",
+        default=["llama31-70B", "mistral-8x7B-0p1"],
+        required=False,
+    )
+
+    args = parser.parse_args()
+
+    combine_results(
+        args.results_dir,
+        args.model_list,
+        args.prompt_list,
+        args.n_combinations,
+        args.pred_filename,
+        args.output_dir,
+        args.gt_file,
+        args.sample,
+        args.max_bigmodel,
+        args.big_models,
+    )
+
+
+if __name__ == "__main__":
+    execute()
+
+# example usage:
+# models = [
+# "llama-32-3B",
+# "mistral-7B",
+# "mistral-8x7B-0p1"
+# ]
+# prompts = [
+# "highlemma-fewlabels",
+# "highlemma-manylabels",
+# "lowlemma-fewlabels",
+# "lowlemma-manylabels",
+# "english-0-8",
+# "english-1-8",
+# "english-2-12"
+# ]
+
+# for i in range(10, 105, 10):
+#     out_dir = "results/best_combinations/" + str(i) + "/"
+#     os.makedirs(out_dir, exist_ok=True)
+#     pr_auc = combine_results(
+#     "/results",
+#     models,
+#     prompts,
+#     i,
+#     "predictions.csv",
+#     out_dir,
+#     "datasets/dev_sample.csv",
+#     sample=100
+# )

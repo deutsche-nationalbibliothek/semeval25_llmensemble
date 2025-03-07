@@ -11,12 +11,10 @@ stages:
           --languages ${general.languages} \
           --subjects ${general.subjects} \
           --output_file ${general.dataset_file} \
-          --sample_size ${general.sample_size} \
-          --seed 42\
-          --forbidden_docs assets/deny_list_dev_sample.csv
+          --include_docs assets/dev-test_idns.csv
     deps:
       - src/preprocess.py
-      - assets/deny_list_dev_sample.csv
+      - assets/dev-test_idns.csv
     params:
       - general.split
       - general.text_types
@@ -27,6 +25,7 @@ stages:
 
   create_vocab_collection:
     frozen: true
+    desc: Create a Weaviate collection with the embeddings for the mapping stage.
     cmd: 
       - > 
         python src/create_vocab_collection.py \
@@ -52,7 +51,7 @@ stages:
     matrix:
       model: ${language_models}
       prompt: ${completion.prompt_specification_files}
-    desc: Generate freeterms with LLM 
+    desc: Generate free keywords for a matrix of model x prompt combinations
     cmd:
     - mkdir -p ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}
     - > 
@@ -84,7 +83,7 @@ stages:
     matrix:
       model: ${language_models}
       prompt: ${completion.prompt_specification_files}
-    desc: Map freeterms to GND
+    desc: Map keywords to GND subject terms for all model x prompt combinations
     cmd:
     - > 
       python src/mapping.py \
@@ -109,25 +108,8 @@ stages:
     - ${general.write_directory}/${item.model.short_name}/${item.prompt.short_name}/mapping_stats.json:
         cache: false
 
-  # summarize_completions:
-  #   desc: Summarize mapped completions from individual models to one file
-  #   always_changed: true # this makes the specification of deps irrelevant
-  #   cmd:
-  #   - > 
-  #     python src/summarize_candidates.py \
-  #         ${general.write_directory}/llama-32-3B/alltypes-de-abstitle-8-0/${mapping.output_file} \
-  #         ${general.write_directory}/teuken-7B-0p4/alltypes-de-abstitle-8-0/${mapping.output_file} \
-  #       --output_file  ${general.write_directory}/${mapping.output_file} \
-        
-  #   deps:
-  #   - src/summarize_candidates.py
-  #   outs:
-  #   - ${general.write_directory}/${mapping.output_file}
-  #   # - ${general.write_directory}/${mapping.output_file_eval}
-
-  # Note_mk: better collect completions after mapping, so that similar suggestions are not counted as different entities
   summarize_completions_top20-models-and-prompts:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for top-20-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/top20-models-and-prompts
@@ -182,7 +164,7 @@ stages:
     - ${general.write_directory}/top20-models-and-prompts/${mapping.output_file}
 
   summarize_completions_one-model-all-prompts:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for one-model-all-prompts-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/one-model-all-prompts
@@ -217,7 +199,7 @@ stages:
     - ${general.write_directory}/one-model-all-prompts/${mapping.output_file}
 
   summarize_completions_one-prompt-all-models:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for one-prompt-all-models-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/one-prompt-all-models
@@ -246,7 +228,7 @@ stages:
     - ${general.write_directory}/one-prompt-all-models/${mapping.output_file}
 
   summarize_completions_one-prompt-one-model:
-    desc: Summarize mapped completions from individual models to one file
+    desc: Run summarize-stage for one-prompt-one-model-ensemble
     always_changed: false 
     cmd:
     - mkdir -p ${general.write_directory}/one-prompt-one-model
@@ -269,7 +251,7 @@ stages:
       - one-prompt-all-models
       - one-prompt-one-model
     do:
-      desc: Rank (and filter) suggestions
+      desc: Run rank-stage for all ensemble-strategies
       cmd:
       - > 
         python src/rank.py \
@@ -292,6 +274,7 @@ stages:
       deps:
       - src/rank.py
       - ${general.write_directory}/${item}/${mapping.output_file}
+      - ${general.dataset_file}
       outs:
       - ${general.write_directory}/${item}/${ranking.output_file}
 
@@ -306,7 +289,7 @@ stages:
       one-prompt-one-model:
         weight: 0.3
     do:
-      desc: Combine scores from different stages
+      desc: Run combine-stage for all ensemble-strategies to produce final results
       cmd: 
         - >
           python src/combine_scores.py \

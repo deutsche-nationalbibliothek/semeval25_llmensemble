@@ -1,3 +1,8 @@
+# File name: collect_stratified_results.r
+# Description: Collects stratified results from the different 
+# model x prompt subfolders
+# and creates one summary file with all results
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(arrow)

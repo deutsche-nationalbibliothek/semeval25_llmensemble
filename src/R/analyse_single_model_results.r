@@ -1,5 +1,7 @@
-library(tidyverse)
+# File name: analyse_single_model_results.r
+# Description: Plots the stratified results by different models and prompts
 
+library(tidyverse)
 library(arrow)
 
 df <- read_feather("results/stratified_results_by_model_and_prompt.arrow")

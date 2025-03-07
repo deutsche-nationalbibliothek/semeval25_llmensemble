@@ -1,3 +1,6 @@
+# File name: create_pr_curves.r
+# Description: Contains code to create PR curves for the different ensemble strategies
+
 library(arrow)
 library(tidyverse)
 

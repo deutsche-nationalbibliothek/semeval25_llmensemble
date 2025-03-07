@@ -1,24 +1,28 @@
 #!/usr/bin/env Rscript
+# File name: compute_metrics.r
+# Description: Computes metrics for results of individual models and ensembles
+# Note: DNB-internal package aeneval required
+
 library("optparse")
 
 option_list <- list(
   make_option(
     c("--ground_truth"),
     type = "character",
-    default = "datasets/all-subjects-tib-core-subjects-Article-Book-Conference-Report-Thesis-en-de-dev_sample1000.csv",
+    default = "datasets/dev_opt.csv",
     help = "path to the ground truth file",
     metavar = "character"
   ),
   make_option(
     c("--predictions"),
-    type = "character", default = "results/predictions.arrow",
+    type = "character", default = "results/predictions.csv",
     help = "path to the predictions file",
     metavar = "character"
   ),
   make_option(
     c("--ordinal_ranking"),
     type = "logical", default = FALSE,
-    help = "pr-curves is calculated using ordinal ranking (limits) 
+    help = "pr-curves is calculated using ordinal ranking (limits)
       without thresholds on confidence scores",
   ),
   make_option(
@@ -29,7 +33,7 @@ option_list <- list(
   make_option(
     c("--ignore_unmatched_docs"),
     type = "logical", default = FALSE,
-    help = "If set to true, documents in the ground truth that are 
+    help = "If set to true, documents in the ground truth that are
       not in the predictions and vice versa are ignored.",
   ),
   make_option(
@@ -99,7 +103,7 @@ non_unique_tuples <- gold_standard  |>
   nrow()
 
 if (non_unique_tuples > 0)
-  stop("There are non-unique tuples (doc_id, label_id) in the ground truth.") 
+  stop("There are non-unique tuples (doc_id, label_id) in the ground truth.")
 
 missing_labels <- gold_standard  |>
   filter(is.na(label_id))  |>
@@ -216,7 +220,7 @@ if (!opt$set_retrieval_only) {
 
 
 
-# Berechne die Retrieval Metriken 
+# Berechne die Retrieval Metriken
 # mit Konfidenzintervallen
 message("compute set retrieval scores...")
 res_overall <- aeneval::compute_set_retrieval_scores(
@@ -287,8 +291,3 @@ write_feather(
   stratified_results,
   file.path(opt$out_folder, "stratified_results.arrow")
 )
-
-# pairwise_comparison <- create_comparison(gold_standard, predictions_at_5)
-# write_feather(pairwise_comparison, sink = file.path("intermediate-results", opt$opt$evalset, "pairwise_comparison.arrow"))
-# results_doc_wise <- compute_intermediate_results(pairwise_comparison, grouping_var = "doc_id")
-# write_feather(results_doc_wise$results_table, sink = file.path("intermediate-results", opt$opt$evalset, "results_doc_wise.arrow"))
