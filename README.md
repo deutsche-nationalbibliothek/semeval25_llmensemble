@@ -3,6 +3,9 @@
 This repository is our implementation for the SemEval-2025 Task 5 - LLMs4Subjects. Here is the webpage of the task:
 https://sites.google.com/view/llms4subjects/home?authuser=0
 
+Our system description paper is published in the [Conference Proceedings of SemEval-2025](https://aclanthology.org/2025.semeval-1.148/)
+and received a Best-Paper-Award among the submissions of the shared task. 
+
 The main idea of our system is to leverage a range of few-shot prompts and LLMs and ensemble the results, no fine-tuning required. We hande the vocabulary by mapping the LLM's keywords onto it using embeddings.
 We rank fourth on the quantitative evaluation board and first on the qualitative evaluation board.
 
@@ -167,3 +170,27 @@ See the [documentation]{https://dvc.org/doc/command-reference/exp/run#exp-run} f
 Metrics are computed in a seperate dvc-pipeline contained in the subfolder `eval-pipeline`. 
 Currently, these are only reproducible with our internal tools, but we hope to share 
 our evaluation tooling, too, asap.  
+
+# Citation
+
+Please cite our work as:
+
+```
+@inproceedings{kluge-kahler-2025-dnb,
+    title = "{DNB}-{AI}-Project at {S}em{E}val-2025 Task 5: An {LLM}-Ensemble Approach for Automated Subject Indexing",
+    author = {Kluge, Lisa  and
+      K{\"a}hler, Maximilian},
+    editor = "Rosenthal, Sara  and
+      Ros{\'a}, Aiala  and
+      Ghosh, Debanjan  and
+      Zampieri, Marcos",
+    booktitle = "Proceedings of the 19th International Workshop on Semantic Evaluation (SemEval-2025)",
+    month = jul,
+    year = "2025",
+    address = "Vienna, Austria",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.semeval-1.148/",
+    pages = "1118--1128",
+    ISBN = "979-8-89176-273-2"
+}
+```
