@@ -307,3 +307,34 @@ stages:
         - ${general.write_directory}/${key}/${combining_scores.output_file}
 
  
+  bring_to_submission_format:
+    cmd:
+      - mkdir -p ${submission.output_dir}/${submission.team_name}
+      - >
+        python src/bring_to_submission_format.py \
+          --predictions_file results/top20-models-and-prompts/predictions_with_combined_scores.csv \
+          --dataset_file ${general.dataset_file} \
+          --general_out_dir ${submission.output_dir}/${submission.team_name}/
+     # - tar -czvf ${submission.output_dir}/${language_model.short_name}/${prompting.prompt_name}/${submission.team_name}.tar.gz -C ${submission.output_dir}/ ${submission.team_name}
+    params:
+      - submission.output_dir
+    deps:
+      - results/top20-models-and-prompts/predictions_with_combined_scores.csv
+      - src/bring_to_submission_format.py
+
+  eval:
+    desc: Evaluate the predictions using the llms4subjects evaluation script"
+    always_changed: true
+    cmd:
+      - >
+        python src/llms4subjects-evaluation.py \
+          --team_name dnb-ai-projects \
+          --true_labels_dir llms4subjects/shared-task-datasets/TIBKAT/all-subjects/data/dev \
+          --pred_labels_dir ${submission.output_dir}/${submission.team_name}/subtask_2 \
+          --results_dir results/top20-models-and-prompts/llm24subjects_eval
+    deps:
+      - src/llms4subjects-evaluation.py
+    outs:
+      - results/top20-models-and-prompts/llm24subjects_eval/dnb-ai-projects_evaluation_metrics.xlsx
+      - results/top20-models-and-prompts/llm24subjects_eval/dnb-ai-projects_evaluation_metrics_combined.csv
+      

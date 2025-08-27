@@ -6118,3 +6118,42 @@ stages:
       hash: md5
       md5: dc82e43251503a1561139a6bcf7f2377
       size: 289775
+  bring_to_submission_format:
+    cmd:
+    - mkdir -p post-hoc-submission/dnb-ai-project
+    - "python src/bring_to_submission_format.py \\\n  --predictions_file results/top20-models-and-prompts/predictions_with_combined_scores.csv
+      \\\n  --dataset_file datasets/dev_sample.csv \\\n  --general_out_dir post-hoc-submission/dnb-ai-project/\n"
+    deps:
+    - path: results/top20-models-and-prompts/predictions_with_combined_scores.csv
+      hash: md5
+      md5: 4a230a9aaf48cc0d020a58486e800efd
+      size: 2427759
+    - path: src/bring_to_submission_format.py
+      hash: md5
+      md5: 5867fa364d1b2dd7cf9e0c828b48de80
+      size: 2864
+    params:
+      params.yaml:
+        submission.output_dir: post-hoc-submission
+  eval:
+    cmd:
+    - "python src/llms4subjects-evaluation.py \\\n  --team_name dnb-ai-projects \\\
+      \n  --true_labels_dir llms4subjects/shared-task-datasets/TIBKAT/all-subjects/data/dev
+      \\\n  --pred_labels_dir post-hoc-submission/dnb-ai-project/subtask_2 \\\n  --results_dir
+      results/top20-models-and-prompts/llm24subjects_eval\n"
+    deps:
+    - path: src/llms4subjects-evaluation.py
+      hash: md5
+      md5: 1f31c9cc8663cbda26abc96781144f8a
+      size: 23713
+    outs:
+    - path: 
+        results/top20-models-and-prompts/llm24subjects_eval/dnb-ai-projects_evaluation_metrics.xlsx
+      hash: md5
+      md5: de1394a0c94773bc5b16f290dd10cfbd
+      size: 8810
+    - path: 
+        results/top20-models-and-prompts/llm24subjects_eval/dnb-ai-projects_evaluation_metrics_combined.csv
+      hash: md5
+      md5: a5a103ef9e21cd59e4a4ca06ed066bd2
+      size: 2867

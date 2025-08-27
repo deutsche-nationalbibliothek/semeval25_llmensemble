@@ -115,10 +115,9 @@ eval:
   ground_truth_file: tib-core-subjects-Article-Book-Conference-Report-Thesis-de-dev.csv
   ordinal_ranking: false
 
-
-
-
-
+submission:
+  output_dir: post-hoc-submission
+  team_name: dnb-ai-project
 
 
 

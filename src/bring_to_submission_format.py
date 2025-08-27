@@ -10,18 +10,19 @@ from argparse import ArgumentParser
 
 
 def create_submission_dir(predictions_file, dataset_file, general_out_dir, debug=False):
-    preds = pd.read_feather(predictions_file)
-    preds = preds.rename({"doc_id": "idn"}, axis="columns")
+    preds = pd.read_csv(predictions_file)
+    # preds = preds.rename({"doc_id": "idn"}, axis="columns")
     dataset = pd.read_csv(dataset_file)
     # assert dataset and preds have the same set of idn values, if not print this out
     print(preds.columns, dataset.columns)
-    assert (
-        len(set(dataset.idn) - set(preds.idn)) == 0
-    ), "Some idn values are missing in the predictions or dataset file"
-    ext_preds = pd.merge(preds, dataset, on="idn")
+    # assert (
+    #     len(set(dataset.doc_id) - set(preds.doc_id)) == 0
+    # ), "Some idn values are missing in the predictions or dataset file"
+    # remove assertion, with only one model + one prompt some idns might not have predictions
+    ext_preds = pd.merge(preds, dataset, on="doc_id")
 
     # Group by 'idn' and sort by 'score'
-    grouped = ext_preds.sort_values(by="score", ascending=False).groupby("idn")
+    grouped = ext_preds.sort_values(by="score", ascending=False).groupby("doc_id")
 
     # Aggregate 'label_id' values and keep 'language' and 'text_type'
     result = grouped.agg(
@@ -30,7 +31,7 @@ def create_submission_dir(predictions_file, dataset_file, general_out_dir, debug
 
     if debug:
         result = result[
-            result.idn.isin(
+            result.doc_id.isin(
                 [
                     "3A1653943785",
                     "3A1769713336",
@@ -49,17 +50,17 @@ def create_submission_dir(predictions_file, dataset_file, general_out_dir, debug
         language = row["language"]
         text_type = row["text_type"]
         label_ids = row["label_id"]
-        idn = row["idn"]
-        file_dir = os.path.join(general_out_dir, text_type, language)
+        doc_id = row["doc_id"]
+        file_dir = os.path.join(general_out_dir, "subtask_2", text_type, language)
         os.makedirs(file_dir, exist_ok=True)
-        with open(os.path.join(file_dir, f"{idn}.json"), "w") as f:
-            json.dump({"dcterms_subject": label_ids}, f, indent=4)
+        with open(os.path.join(file_dir, f"{doc_id}.json"), "w") as f:
+            json.dump({"dcterms:subject": label_ids}, f, indent=4)
 
 
 def execute():
     parser = ArgumentParser()
     parser.add_argument(
-        "--predictions_file", help="Predictions file (.arrow)", type=str, required=True
+        "--predictions_file", help="Predictions file (.csv)", type=str, required=True
     )
     parser.add_argument(
         "--dataset_file",
