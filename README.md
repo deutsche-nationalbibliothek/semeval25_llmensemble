@@ -12,6 +12,8 @@ We rank fourth on the quantitative evaluation board and first on the qualitative
 Important libraries for our system are [DVC](https://dvc.org/doc) and [vLLM](https://docs.vllm.ai/en/latest/). Our system also connects to a local [Weaviate](https://weaviate.io/) vector storage as well as a local Text Embedding Service through Huggingface TEI. You will need to set these up, before you can run the code. 
 Our work results from a [project](https://www.dnb.de/EN/Professionell/ProjekteKooperationen/Projekte/KI/ki_node.html) at the German National Library (DNB), aiming at finding and testing methods for the task of subject indexing digital publications in the German language.
 
+**Note:** This repository is a research prototype, which is no longer under development. There will be no dependency updates. 
+
 ## Table of Contents
 - [System Description](#system-description)
 - [Instructions](#instructions)
